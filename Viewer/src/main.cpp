@@ -124,6 +124,17 @@ void StartFrame()
 	ImGui::NewFrame();
 }
 
+static void windowResizeCallback (GLFWwindow * window, int width, int height) {
+	// Create the renderer and the scene
+	Renderer renderer = Renderer(width, height);
+	Scene scene = Scene();
+
+	// Setup ImGui
+	ImGuiIO& io = SetupDearImgui(window);
+
+	RenderFrame(window, scene, renderer, io);
+}
+
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
 	// Render the menus
@@ -134,6 +145,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
 
 	// Resize handling here... (a suggestion)
+	glfwSetWindowSizeCallback(window, &windowResizeCallback);
 
 	// Clear the frame buffer
 	renderer.ClearColorBuffer(GetClearColor());
