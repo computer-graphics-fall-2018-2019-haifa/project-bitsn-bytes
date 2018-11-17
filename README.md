@@ -2,7 +2,6 @@
 ## Students Team data
 
 Name: 'Ahmad Hakroosh'
-
 Student Number: '203622162'
 
 ### Lecturer
@@ -43,7 +42,7 @@ Interactive Computer Graphics: A Top-Down Approach with Shader-Based OpenGL ,6th
 
 ## Assignments
 
-* [Assignment 1: Wireframe Viewer](homework1.pdf)
+* [Assignment 1: Wireframe Viewer](Assignment1/homework1.pdf)
 
 * [Assignment 2: Basic Shading](Assignment2/homework2.pdf)
 
