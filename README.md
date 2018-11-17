@@ -1,7 +1,8 @@
 # Computer Graphics 203.3710, Winter 2018/2019
 ## Students Team data
 
-Name: 'Ahmad Hakroosh' 
+Name: 'Ahmad Hakroosh'
+
 Student Number: '203622162'
 
 ### Lecturer
