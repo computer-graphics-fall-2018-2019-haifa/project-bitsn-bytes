@@ -14,6 +14,9 @@
 #include "Camera.h"
 #include "ImguiMenus.h"
 
+// Custom pre-defined constants to be used all around the application
+#include "Constants.h"
+
 // Function declarations
 static void GlfwErrorCallback(int error, const char* description);
 GLFWwindow* SetupGlfwWindow(int w, int h, const char* window_name);
@@ -33,8 +36,7 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 int main(int argc, char **argv)
 {
 	// Create GLFW window
-	int windowWidth = 1280, windowHeight = 720;
-	GLFWwindow* window = SetupGlfwWindow(windowWidth, windowHeight, "Mesh Viewer");
+	GLFWwindow* window = SetupGlfwWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, WINDOW_TITLE);
 	if (!window)
 	{
 		return 1;
