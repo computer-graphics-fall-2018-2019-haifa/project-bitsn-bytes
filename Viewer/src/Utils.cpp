@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "Constants.h"
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -33,14 +34,6 @@ MeshModel Utils::LoadMeshModel(const string& filePath)
 		exit(-1);
 	}
 
-	glm::vec3 maxCoordinates = { -numeric_limits<float>::max(), -numeric_limits<float>::max(), -numeric_limits<float>::max() };
-	glm::vec3 minCoordinates = { numeric_limits<float>::max(), numeric_limits<float>::max(), numeric_limits<float>::max() };
-
-	glm::vec3 normalizedVector;
-	glm::vec3 modelCentroid = { 0, 0, 0 };
-
-	unsigned int verticesCount = 0;
-
 	// while not end of file
 	while (!ifile.eof())
 	{
@@ -58,19 +51,6 @@ MeshModel Utils::LoadMeshModel(const string& filePath)
 		if (lineType == "v")
 		{
 			glm::vec3 parsedVector = Vec3fFromStream(issLine);
-
-			minCoordinates.x = _CMATH_::fmin(minCoordinates.x, parsedVector.x);
-			minCoordinates.y = _CMATH_::fmin(minCoordinates.y, parsedVector.y);
-			minCoordinates.z = _CMATH_::fmin(minCoordinates.z, parsedVector.z);
-
-			maxCoordinates.x = _CMATH_::fmax(maxCoordinates.x, parsedVector.x);
-			maxCoordinates.y = _CMATH_::fmax(maxCoordinates.y, parsedVector.y);
-			maxCoordinates.z = _CMATH_::fmax(maxCoordinates.z, parsedVector.z);
-
-			modelCentroid += parsedVector;
-
-			verticesCount++;
-
 			vertices.push_back(parsedVector);
 		}
 		else if (lineType == "vn")
@@ -95,9 +75,7 @@ MeshModel Utils::LoadMeshModel(const string& filePath)
 		}
 	}
 
-	MeshModel model = MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
-
-	
+	return MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
 }
 
 string Utils::GetFileName(const string& filePath)

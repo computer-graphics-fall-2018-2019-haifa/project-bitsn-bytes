@@ -15,11 +15,10 @@
 // Constants
 #define DISABLED							-1
 #define PI									3.141592653589793238462643383279502884L
-
+// Constant matrices
 #define ZERO_MATRIX							{ { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } }
 #define FLATTEN_MATRIX						{ { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 1 } }
 #define I_MATRIX							{ { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } }
-
 // Functions
 #define SCALING_MATRIX4(value)				{ { (value), 0, 0, 0 }, { 0, (value), 0, 0 }, { 0, 0, (value), 0 }, { 0, 0, 0, 1 } }
 #define TRANSLATION_MATRIX(x, y, z)			{ { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { (x), (y), (z), 1 } }
@@ -31,6 +30,8 @@
 #define PERSPECTIVE_MATRIX(d)				{ { 1, 0, 0, 0}, { 0, 1, 0, 0 }, { 0, 0, 1, 1.0f / (d) }, { 0, 0, 0, 0 } }
 #define NORM_ZERO_TO_ONE(value, min, max)	((value) - (min)) / ((max) - (min))
 #define NORMALIZE_COORDS(value, min, max)	(((NORM_ZERO_TO_ONE(value, min, max) * 2) - 1))
+#define MIN(a, b)							(((a) < (b)) ? (a) : (b))
+#define MAX(a, b)							(((a) > (b)) ? (a) : (b))
 
 // Enumerators
 typedef enum _COLOR_ {
@@ -64,3 +65,14 @@ typedef enum _PRIM_MODEL_ {
 	CAMERA
 
 } PRIM_MODEL;
+
+typedef struct _PROJ_PARAMS_
+{
+	float left;
+	float right;
+	float bottom;
+	float top;
+	float zNear;
+	float zFar;
+
+} PROJ_PARAMS, *PPROJ_PARAMS;

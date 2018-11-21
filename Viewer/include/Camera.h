@@ -38,5 +38,5 @@ public:
 
 	void SetZoom(const float zoom);
 
-	// Add more methods/functionality as needed...
+	PMODEL GetCameraModel();
 };

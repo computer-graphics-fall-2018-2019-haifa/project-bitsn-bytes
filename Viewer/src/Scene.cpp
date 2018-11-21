@@ -42,6 +42,26 @@ const int Scene::GetActiveCameraIndex() const
 {
 	return activeCameraIndex;
 }
+// TODO
+Camera* Scene::GetActiveCamera()
+{
+	
+}
+// TODO
+void Scene::NextCamera()
+{
+
+}
+// TODO
+void Scene::DeleteActiveCamera()
+{
+
+}
+// TODO
+const bool Scene::ShouldRenderCamera(int cameraIndex)
+{
+
+}
 
 void Scene::SetActiveModelIndex(int index)
 {
@@ -55,4 +75,19 @@ void Scene::SetActiveModelIndex(int index)
 const int Scene::GetActiveModelIndex() const
 {
 	return activeModelIndex;
+}
+// TODO
+void Scene::SetWorldTransformation(const glm::mat4x4 world)
+{
+
+}
+// TODO
+const glm::mat4x4 Scene::GetWorldTransformation()
+{
+
+}
+// TODO
+const unsigned int Scene::AddPrimitiveModel(PRIM_MODEL primitiveModel)
+{
+
 }

@@ -12,14 +12,19 @@
 class MeshModel
 {
 private:
+	// constant properties
+	glm::vec4 color;
+	std::string modelName;
 	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
+	// Computed properties
+	glm::mat4x4 transformation;
 	glm::mat4x4 worldTransform;
-	glm::vec4 color;
-	std::string modelName;
-	// More private members
-	glm::vec3 modelCentroid;
+	glm::mat4x4 normalTransformation;
+	glm::vec3 centroid;
+	// Helper properties
+	// ...
 
 public:
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
