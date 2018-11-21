@@ -18,6 +18,8 @@ private:
 	glm::mat4x4 worldTransform;
 	glm::vec4 color;
 	std::string modelName;
+	// More private members
+	glm::vec3 modelCentroid;
 
 public:
 	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
