@@ -109,21 +109,21 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			scene.DeleteActiveCamera();
 		}
 
-		static bool bShowCamera = false;
+		static bool showCamera = false;
 		int cameraIndex = scene.GetActiveCameraIndex();
 		ImGui::Text("Active camera: %d", cameraIndex);
-		bShowCamera = scene.ShouldRenderCamera(cameraIndex);
+		showCamera = scene.ShouldRenderCamera(cameraIndex);
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Show Camera", &bShowCamera))
+		if (ImGui::Checkbox("Show Camera", &showCamera))
 		{
 			if (scene.GetActiveCamera() != NULL) {
-				scene.GetActiveCamera()->GetCameraModel()->setModelRenderingState(bShowCamera);
+				scene.GetActiveCamera()->GetCameraModel()->SetModelRenderingState(showCamera);
 			}
 		}
 
 
-		static PROJ_PARAMS projParams =
+		static PROJECTION_PARAMETERS projParams =
 		{
 			projParams.left = -10,
 			projParams.right = 10,
@@ -148,7 +148,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			if (ImGui::Button("Orthographic Projection"))
 			{
-				scene.SetOrthoProjection(projParams);
+				scene.SetOrthographicProjection(projParams);
 			}
 		}
 		catch (bool thrownErrorState)
@@ -165,7 +165,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 
 
-		static PERSPECTIVE_PARAMS perspParam =
+		static PERSPECTIVE_PARAMETERS perspParam =
 		{
 			perspParam.fovy = PI / 3,
 			perspParam.aspect = ImGui::GetWindowWidth() / ImGui::GetWindowHeight(),

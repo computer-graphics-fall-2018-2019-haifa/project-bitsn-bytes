@@ -7,45 +7,58 @@
 #include <memory>
 #include "MeshModel.h"
 #include "Camera.h"
+#include "Renderer.h"
 #include "Constants.h"
+
+using namespace std;
 
 /*
  * Scene class.
  * This class holds all the scene information (models, cameras, lights, etc..)
  */
 class Scene {
-private:
-	std::vector<std::shared_ptr<MeshModel>> models;
-	std::vector<Camera> cameras;
+	private:
+		vector<shared_ptr<MeshModel>> models;
+		vector<Camera> cameras;
 
-	int activeCameraIndex;
-	int activeModelIndex;
+		int activeCameraIndex;
+		int activeModelIndex;
+		Renderer *renderer;
 
-public:
-	Scene();
-	// Model related functions
-	void AddModel(const std::shared_ptr<MeshModel>& model);
-	const int GetModelCount() const;
+		glm::mat4x4 worldTransformation;
 
-	void SetActiveModelIndex(int index);
-	const int GetActiveModelIndex() const;
+		bool drawVecNormal;
+		bool drawFaceNormal;
+		bool showBorderCube;
 
-	const unsigned int AddPrimitiveModel(PRIM_MODEL primitiveModel);
+	public:
+		Scene(Renderer *renderer);
+		// Model related functions
+		void AddModel(const shared_ptr<MeshModel>& model);
+		const int GetModelCount() const;
 
-	// Camera related functions
-	void AddCamera(const Camera& camera);
-	const int GetCameraCount() const;
+		void SetActiveModelIndex(int index);
+		const int GetActiveModelIndex() const;
 
-	void SetActiveCameraIndex(int index);
-	const int GetActiveCameraIndex() const;
+		const unsigned int AddPrimitiveModel(PRIMITIVE_MODEL primitiveModel);
 
-	Camera* GetActiveCamera();
-	void NextCamera();
-	void DeleteActiveCamera();
-	const bool ShouldRenderCamera(int cameraIndex);
+		// Camera related functions
+		void AddCamera(const Camera& camera);
+		const int GetCameraCount() const;
 
-	// Transformation related functions
-	void SetWorldTransformation(const glm::mat4x4 world);
-	const glm::mat4x4 GetWorldTransformation();
+		void SetActiveCameraIndex(int index);
+		const int GetActiveCameraIndex() const;
+
+		Camera* GetActiveCamera();
+		void NextCamera();
+		void DeleteActiveCamera();
+		const bool ShouldRenderCamera(int cameraIndex);
+
+		void SetOrthographicProjection(const PROJECTION_PARAMETERS);
+		void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS);
+
+		// Transformation related functions
+		void SetWorldTransformation(const glm::mat4x4 world);
+		const glm::mat4x4 GetWorldTransformation();
 
 };

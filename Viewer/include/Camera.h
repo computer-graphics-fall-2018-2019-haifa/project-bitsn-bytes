@@ -2,6 +2,7 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include "MeshModel.h"
+#include "Constants.h"
 
 /*
  * Camera class. This class takes care of all the camera transformations and manipulations.
@@ -16,27 +17,27 @@ class Camera
 private:
 	glm::mat4x4 viewTransformation;
 	glm::mat4x4 projectionTransformation;
+	MeshModel *cameraModel;
+	PROJECTION_PARAMETERS frustumParams;
+	int cameraIndex;
 	float zoom;
 
 public:
+	Camera();
 	Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up);
 	~Camera();
 
 	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 
-	void SetOrthographicProjection(
-		const float height,
-		const float aspectRatio,
-		const float near,
-		const float far);
+	void SetOrthographicProjection(const PROJECTION_PARAMETERS);
 
-	void SetPerspectiveProjection(
-		const float fovy,
-		const float aspect,
-		const float near,
-		const float far);
+	void SetPerspectiveProjection(const PROJECTION_PARAMETERS);
+
+	void SetFrustumViewVolume(const PROJECTION_PARAMETERS projParams);
 
 	void SetZoom(const float zoom);
 
-	PMODEL GetCameraModel();
+	void SetCameraModel(MeshModel* model) { cameraModel = model; }
+
+	MeshModel* GetCameraModel() { return cameraModel; }
 };

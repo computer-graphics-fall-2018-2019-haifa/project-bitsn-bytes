@@ -4,6 +4,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+Camera::Camera() : viewTransformation(I_MATRIX), projectionTransformation(I_MATRIX)
+{
+	cameraModel = new MeshModel();
+}
+
 Camera::Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) :
 	zoom(1.0)
 {
@@ -19,20 +24,17 @@ void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const gl
 
 }
 
-void Camera::SetOrthographicProjection(
-	const float height,
-	const float aspectRatio,
-	const float near,
-	const float far)
+void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS)
 {
 
 }
 
-void Camera::SetPerspectiveProjection(
-	const float fovy,
-	const float aspectRatio,
-	const float near,
-	const float far)
+void Camera::SetPerspectiveProjection(const PROJECTION_PARAMETERS)
+{
+
+}
+
+void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS)
 {
 
 }
@@ -40,4 +42,8 @@ void Camera::SetPerspectiveProjection(
 void Camera::SetZoom(const float zoom)
 {
 
+}
+
+MeshModel* Camera::GetCameraModel() {
+	return cameraModel;
 }

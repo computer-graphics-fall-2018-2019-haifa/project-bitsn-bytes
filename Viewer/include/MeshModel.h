@@ -4,6 +4,8 @@
 #include <memory>
 #include "Face.h"
 
+using namespace std;
+
 /*
  * MeshModel class.
  * This class represents a mesh model (with faces and normals informations).
@@ -11,32 +13,34 @@
  */
 class MeshModel
 {
-private:
-	// constant properties
-	glm::vec4 color;
-	std::string modelName;
-	std::vector<Face> faces;
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normals;
-	// Computed properties
-	glm::mat4x4 transformation;
-	glm::mat4x4 worldTransform;
-	glm::mat4x4 normalTransformation;
-	glm::vec3 centroid;
-	// Helper properties
-	// ...
+	private:
+		// constant properties
+		glm::vec4 color;
+		string modelName;
+		vector<Face> faces;
+		vector<glm::vec3> vertices;
+		vector<glm::vec3> normals;
+		// Computed properties
+		glm::mat4x4 transformation;
+		glm::mat4x4 worldTransform;
+		glm::mat4x4 normalTransformation;
+		glm::vec3 centroid;
+		// Helper properties
+		bool shouldRender;
 
-public:
-	MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
-	virtual ~MeshModel();
+	public:
+		MeshModel(const vector<Face>& faces, const vector<glm::vec3>& vertices, const vector<glm::vec3>& normals, const string& modelName = "");
+		virtual ~MeshModel();
 
-	void SetWorldTransformation(const glm::mat4x4& worldTransform);
-	const glm::mat4x4& GetWorldTransformation() const;
+		void SetWorldTransformation(const glm::mat4x4& worldTransform);
+		const glm::mat4x4& GetWorldTransformation() const;
 
-	const glm::vec4& GetColor() const;
-	void SetColor(const glm::vec4& color);
+		const glm::vec4& GetColor() const;
+		void SetColor(const glm::vec4& color);
 
-	const std::string& GetModelName();
+		const string& GetModelName();
 
-	// Add more methods/functionality as needed...
+		void SetModelRenderingState(bool state) { shouldRender = state; }
+
+		bool IsModelRenderingActive() { return shouldRender; }
 };

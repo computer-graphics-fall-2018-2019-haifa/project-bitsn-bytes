@@ -58,15 +58,15 @@ typedef enum _RETURN_VALUE_ {
 
 } RETURN_VALUE;
 
-typedef enum _PRIM_MODEL_ {
+typedef enum _PRIMITIVE_MODEL_ {
 
 	SPHERE = 0,
 	CUBE,
 	CAMERA
 
-} PRIM_MODEL;
+} PRIMITIVE_MODEL;
 
-typedef struct _PROJ_PARAMS_
+typedef struct _PROJECTION_PARAMETERS_
 {
 	float left;
 	float right;
@@ -75,4 +75,19 @@ typedef struct _PROJ_PARAMS_
 	float zNear;
 	float zFar;
 
-} PROJ_PARAMS, *PPROJ_PARAMS;
+} PROJECTION_PARAMETERS, *PPROJECTION_PARAMETERS;
+
+typedef struct _PERSPECTIVE_PARAMETERS_
+{
+	float fovy;
+	float aspect;
+	float zNear;
+	float zFar;
+
+} PERSPECTIVE_PARAMETERS, *PPERSPECTIVE_PARAMETERS;
+
+typedef struct _CUBE_LINES_
+{
+	std::pair<glm::vec3, glm::vec3> line[12];
+
+} CUBE_LINES, *PCUBE_LINES;
