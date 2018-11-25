@@ -368,7 +368,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 					nfdchar_t *outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("obj;png,jpg", NULL, &outPath);
 					if (result == NFD_OKAY) {
-						const MeshModel model = Utils::LoadMeshModel(outPath);
 						scene.AddModel(std::make_shared<MeshModel>(Utils::LoadMeshModel(outPath)));
 						free(outPath);
 					}
