@@ -6,7 +6,7 @@
 
 Camera::Camera() : viewTransformation(I_MATRIX), projectionTransformation(I_MATRIX)
 {
-	cameraModel = new MeshModel();
+	//cameraModel = new CameraModel();
 }
 
 Camera::Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) :
@@ -44,6 +44,11 @@ void Camera::SetZoom(const float zoom)
 
 }
 
-MeshModel* Camera::GetCameraModel() {
+void Camera::SetCameraModel(CameraModel* model)
+{
+	cameraModel = model;
+}
+
+CameraModel* Camera::GetCameraModel() {
 	return cameraModel;
 }

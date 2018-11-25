@@ -4,13 +4,12 @@
 #include "Camera.h"
 #include <string>
 
-Scene::Scene(Renderer *renderer = NULL) :
-	activeCameraIndex(DISABLED),
-	activeModelIndex(DISABLED),
-	worldTransformation(I_MATRIX),
-	drawVecNormal(false),
-	renderer(renderer)
+Scene::Scene() : activeCameraIndex(DISABLED), activeModelIndex(DISABLED), worldTransformation(I_MATRIX), drawVecNormal(false)
+{
 
+}
+
+Scene::Scene(Renderer *renderer_) : activeCameraIndex(DISABLED), activeModelIndex(DISABLED), worldTransformation(I_MATRIX), drawVecNormal(false), renderer(renderer_)
 {
 
 }
@@ -28,7 +27,7 @@ const int Scene::GetModelCount() const
 
 void Scene::SetActiveModelIndex(int index)
 {
-	if (index >= 0 && index < models.size())
+	if (index >= 0 && (unsigned int) index < models.size())
 	{
 		activeModelIndex = index;
 	}
@@ -37,6 +36,11 @@ void Scene::SetActiveModelIndex(int index)
 const int Scene::GetActiveModelIndex() const
 {
 	return activeModelIndex;
+}
+
+const unsigned int Scene::AddPrimitiveModel(PRIMITIVE primitiveModel)
+{
+	return 1;
 }
 
 // Camera related functions implementation
@@ -52,7 +56,7 @@ const int Scene::GetCameraCount() const
 
 void Scene::SetActiveCameraIndex(int index)
 {
-	if (index >= 0 && index < cameras.size())
+	if (index >= 0 && (unsigned int) index < cameras.size())
 	{
 		activeCameraIndex = index;
 	}
@@ -95,6 +99,63 @@ const bool Scene::ShouldRenderCamera(int cameraIndex)
 	}
 }
 
+void Scene::SetOrthographicProjection(PROJECTION_PARAMETERS)
+{
+
+}
+
+void Scene::SetPerspectiveProjection(PERSPECTIVE_PARAMETERS)
+{
+
+}
+
+const glm::mat4x4 Scene::GetActiveCameraTransformation()
+{
+	return glm::mat4x4{ {0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0} };
+}
+
+const glm::mat4x4 Scene::GetActiveCameraProjection()
+{
+	return glm::mat4x4{ {0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0} };
+}
+
+void Scene::ScaleActiveCamera(const float scaleFactor)
+{
+	
+}
+
+void Scene::TranslateActiveCameraXAxis(const float moveFactor)
+{
+
+}
+
+void Scene::TranslateActiveCameraYAxis(const float moveFactor)
+{
+
+}
+
+void Scene::TranslateActiveCameraZAxis(const float moveFactor)
+{
+
+}
+
+void Scene::RotateActiveCameraXAxis(const float moveFactor)
+{
+
+}
+
+void Scene::RotateActiveCameraYAxis(const float moveFactor)
+{
+
+}
+
+void Scene::RotateActiveCameraZAxis(const float moveFactor)
+{
+
+}
+
+// Transformation related functions
+
 void Scene::SetWorldTransformation(const glm::mat4x4 world)
 {
 	worldTransformation = world;
@@ -103,9 +164,4 @@ void Scene::SetWorldTransformation(const glm::mat4x4 world)
 const glm::mat4x4 Scene::GetWorldTransformation()
 {
 	return worldTransformation;
-}
-
-const unsigned int Scene::AddPrimitiveModel(PRIMITIVE_MODEL primitiveModel)
-{
-
 }

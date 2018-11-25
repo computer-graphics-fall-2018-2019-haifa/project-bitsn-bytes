@@ -1,7 +1,11 @@
 #pragma once
 
+#ifndef __CONSTANTS_H__
+#define __CONSTANTS_H__
+
 #include <string>
 #include <stdlib.h>
+#include <map>
 
 // Screen Sizes & Resolutions
 #define DEFAULT_HEIGHT						720
@@ -12,6 +16,8 @@
 #define WINDOW_TITLE						"Mesh Viewer"
 // Source files
 #define CAMERA_SOURCE						"Data/camera.obj"
+#define SPHERE_SOURCE						"Data/shpere.obj"
+#define CUBE_SOURCE							"Data/cube.obj"
 // Constants
 #define DISABLED							-1
 #define PI									3.141592653589793238462643383279502884L
@@ -58,13 +64,13 @@ typedef enum _RETURN_VALUE_ {
 
 } RETURN_VALUE;
 
-typedef enum _PRIMITIVE_MODEL_ {
+typedef enum _PRIMITIVE_ {
 
 	SPHERE = 0,
 	CUBE,
 	CAMERA
 
-} PRIMITIVE_MODEL;
+} PRIMITIVE;
 
 typedef struct _PROJECTION_PARAMETERS_
 {
@@ -91,3 +97,13 @@ typedef struct _CUBE_LINES_
 	std::pair<glm::vec3, glm::vec3> line[12];
 
 } CUBE_LINES, *PCUBE_LINES;
+
+const std::map<PRIMITIVE, std::string> PRIMITIVES = {
+
+	{SPHERE, SPHERE_SOURCE},
+	{CUBE, CUBE_SOURCE},
+	{CAMERA, CAMERA_SOURCE}
+
+};
+
+#endif // !__CONSTANTS_H__

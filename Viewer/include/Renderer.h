@@ -1,10 +1,16 @@
 #pragma once
+
+#ifndef __RENDERER_H__
+#define __RENDERER_H__
+
 #include "Scene.h"
 #include <vector>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
+
+class Scene;
 
 /*
  * Renderer class.
@@ -39,3 +45,5 @@ public:
 
 	// Add more methods/functionality as needed...
 };
+
+#endif // !__RENDERER_H__

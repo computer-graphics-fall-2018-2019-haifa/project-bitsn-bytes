@@ -6,28 +6,26 @@
 #include <fstream>
 #include <sstream>
 
-using namespace std;
-
-glm::vec3 Utils::Vec3fFromStream(istream& issLine)
+glm::vec3 Utils::Vec3fFromStream(std::istream& issLine)
 {
 	float x, y, z;
-	issLine >> x >> ws >> y >> ws >> z;
+	issLine >> x >> std::ws >> y >> std::ws >> z;
 	return glm::vec3(x, y, z);
 }
 
-glm::vec2 Utils::Vec2fFromStream(istream& issLine)
+glm::vec2 Utils::Vec2fFromStream(std::istream& issLine)
 {
 	float x, y;
-	issLine >> x >> ws >> y;
+	issLine >> x >> std::ws >> y;
 	return glm::vec2(x, y);
 }
 
-MeshModel Utils::LoadMeshModel(const string& filePath)
+MeshModel Utils::LoadMeshModel(const std::string& filePath)
 {
-	vector<Face> faces;
-	vector<glm::vec3> vertices;
-	vector<glm::vec3> normals;
-	ifstream ifile(filePath.c_str());
+	std::vector<Face> faces;
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> normals;
+	std::ifstream ifile(filePath.c_str());
 
 	if (ifile.fail()) {
 		fprintf(stderr, "An error occured while trying to open %s", Utils::GetFileName(filePath));
@@ -38,14 +36,14 @@ MeshModel Utils::LoadMeshModel(const string& filePath)
 	while (!ifile.eof())
 	{
 		// get line
-		string curLine;
+		std::string curLine;
 		getline(ifile, curLine);
 
 		// read the type of the line
-		istringstream issLine(curLine);
-		string lineType;
+		std::istringstream issLine(curLine);
+		std::string lineType;
 
-		issLine >> ws >> lineType;
+		issLine >> std::ws >> lineType;
 
 		// based on the type parse data
 		if (lineType == "v")
@@ -71,14 +69,14 @@ MeshModel Utils::LoadMeshModel(const string& filePath)
 		}
 		else
 		{
-			cout << "Found unknown line Type \"" << lineType << "\"";
+			std::cout << "Found unknown line Type \"" << lineType << "\"";
 		}
 	}
 
 	return MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
 }
 
-string Utils::GetFileName(const string& filePath)
+std::string Utils::GetFileName(const std::string& filePath)
 {
 	if (filePath.empty()) {
 		return {};
@@ -87,7 +85,7 @@ string Utils::GetFileName(const string& filePath)
 	auto len = filePath.length();
 	auto index = filePath.find_last_of("/\\");
 
-	if (index == string::npos) {
+	if (index == std::string::npos) {
 		return filePath;
 	}
 
@@ -104,7 +102,7 @@ string Utils::GetFileName(const string& filePath)
 			return filePath.substr(1, len - 1);
 		}
 
-		if (index == string::npos) {
+		if (index == std::string::npos) {
 			return filePath.substr(0, len);
 		}
 

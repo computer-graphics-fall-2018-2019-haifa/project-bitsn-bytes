@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef __FACE_H__
+#define __FACE_H__
+
 #include <memory>
 #include <vector>
 #include <string>
@@ -18,3 +22,5 @@ public:
 	const int Face::GetNormalIndex(int index);
 	const int Face::GetTextureIndex(int index);
 };
+
+#endif // !__FACE_H__

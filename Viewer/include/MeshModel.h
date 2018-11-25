@@ -1,10 +1,14 @@
 #pragma once
+
+#ifndef __MESHMODEL_H__
+#define __MESHMODEL_H__
+
 #include <glm/glm.hpp>
 #include <string>
 #include <memory>
 #include "Face.h"
-
-using namespace std;
+//#include "Utils.h"
+#include "Constants.h"
 
 /*
  * MeshModel class.
@@ -16,10 +20,10 @@ class MeshModel
 	private:
 		// constant properties
 		glm::vec4 color;
-		string modelName;
-		vector<Face> faces;
-		vector<glm::vec3> vertices;
-		vector<glm::vec3> normals;
+		std::string modelName;
+		std::vector<Face> faces;
+		std::vector<glm::vec3> vertices;
+		std::vector<glm::vec3> normals;
 		// Computed properties
 		glm::mat4x4 transformation;
 		glm::mat4x4 worldTransform;
@@ -29,7 +33,8 @@ class MeshModel
 		bool shouldRender;
 
 	public:
-		MeshModel(const vector<Face>& faces, const vector<glm::vec3>& vertices, const vector<glm::vec3>& normals, const string& modelName = "");
+		MeshModel(const std::string& primitive);
+		MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
 		virtual ~MeshModel();
 
 		void SetWorldTransformation(const glm::mat4x4& worldTransform);
@@ -38,9 +43,32 @@ class MeshModel
 		const glm::vec4& GetColor() const;
 		void SetColor(const glm::vec4& color);
 
-		const string& GetModelName();
+		const std::string& GetModelName();
 
 		void SetModelRenderingState(bool state) { shouldRender = state; }
 
 		bool IsModelRenderingActive() { return shouldRender; }
 };
+
+class PrimMeshModel : public MeshModel
+{
+	private:
+		PRIMITIVE model;
+
+	public:
+		PrimMeshModel(const PRIMITIVE primitive);
+};
+
+class CameraModel : public PrimMeshModel
+{
+	private:
+		const PRIMITIVE model = CAMERA;
+		glm::vec4 coordinates;
+
+	public:
+		CameraModel(glm::vec4 coordinates);
+		glm::vec4 GetCoordinates();
+		void SetCoordinates(const glm::vec4& coordinates_);
+};
+
+#endif // !__MESHMODEL_H__

@@ -13,8 +13,7 @@
 #include <stdlib.h>
 #include <nfd.h>
 #include <random>
-
-using namespace std;
+#include <GLFW/glfw3.h>
 
 bool showDemoWindow = false;
 bool showAnotherWindow = false;
@@ -49,7 +48,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		static glm::mat4x4 worldTransformation = glm::mat4x4(0);
 		worldTransformation = scene.GetWorldTransformation();
-		string sWorldTransform = "";
+		std::string sWorldTransform = "";
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -167,15 +166,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		static PERSPECTIVE_PARAMETERS perspParam =
 		{
-			perspParam.fovy = PI / 3,
+			perspParam.fovy = (float) PI / 3,
 			perspParam.aspect = ImGui::GetWindowWidth() / ImGui::GetWindowHeight(),
 			perspParam.zNear = 1,
 			perspParam.zFar = 5
 		};
 
 		ImGui::SliderAngle("Fovy", &perspParam.fovy, 1);
-		ImGui::SliderFloat("Near", &perspParam.zNear, 0.1, 10);
-		ImGui::SliderFloat("Far", &perspParam.zFar, 0.2, 20);
+		ImGui::SliderFloat("Near", &perspParam.zNear, 0.1f, 10);
+		ImGui::SliderFloat("Far", &perspParam.zFar, 0.2f, 20);
 
 		try
 		{
@@ -199,7 +198,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		static glm::mat4x4 activeCameraTransformation = glm::mat4x4(0);
 		activeCameraTransformation = scene.GetActiveCameraTransformation();
-		string sCameraTransform = "";
+		std::string sCameraTransform = "";
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -216,7 +215,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		static glm::mat4x4 activeCameraProjection;
 		activeCameraProjection = scene.GetActiveCameraProjection();
-		string sCameraProjection = "";
+		std::string sCameraProjection = "";
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -232,7 +231,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text(sCameraProjection.c_str());
 
 		ImGui::Text("---------------- Camera Control: ----------------");
-		// Camera scaling:            
+
+		// Camera scaling:
+
 		static float camScaleFactor = 1.5f;
 		ImGui::SliderFloat("scaling factor", &camScaleFactor, 1.0f, 10.0f);
 
@@ -301,7 +302,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		//Camera rotation:
 
-		static float cameraAngle = PI / 9.0f;
+		static float cameraAngle = (float) PI / 9.0f;
 		ImGui::SliderAngle("rotation angle", &cameraAngle, 1.0f, 180.0f);
 
 		if (ImGui::IsKeyPressed('A') || ImGui::Button("+X Axis 'A'"))
@@ -367,6 +368,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 					nfdchar_t *outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("obj;png,jpg", NULL, &outPath);
 					if (result == NFD_OKAY) {
+						const MeshModel model = Utils::LoadMeshModel(outPath);
 						scene.AddModel(std::make_shared<MeshModel>(Utils::LoadMeshModel(outPath)));
 						free(outPath);
 					}

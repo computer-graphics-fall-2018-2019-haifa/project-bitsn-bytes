@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef __CAMERA_H__
+#define __CAMERA_H__
+
 #include <memory>
 #include <glm/glm.hpp>
 #include "MeshModel.h"
@@ -17,7 +21,7 @@ class Camera
 private:
 	glm::mat4x4 viewTransformation;
 	glm::mat4x4 projectionTransformation;
-	MeshModel *cameraModel;
+	CameraModel *cameraModel;
 	PROJECTION_PARAMETERS frustumParams;
 	int cameraIndex;
 	float zoom;
@@ -37,7 +41,9 @@ public:
 
 	void SetZoom(const float zoom);
 
-	void SetCameraModel(MeshModel* model) { cameraModel = model; }
+	void SetCameraModel(CameraModel* model);
 
-	MeshModel* GetCameraModel() { return cameraModel; }
+	CameraModel* GetCameraModel();
 };
+
+#endif // !__CAMERA_H__
