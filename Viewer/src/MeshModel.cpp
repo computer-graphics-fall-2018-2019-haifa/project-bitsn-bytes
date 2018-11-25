@@ -12,8 +12,11 @@ MeshModel::MeshModel(const std::string& primitive)
 
 }
 
-MeshModel::MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName) :
-	modelName(modelName),
+MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec3>& vertices_, const std::vector<glm::vec3>& normals_, const std::string& modelName_) :
+	faces(faces_),
+	vertices(vertices_),
+	normals(normals_),
+	modelName(modelName_),
 	worldTransform(glm::mat4x4(1))
 {
 
