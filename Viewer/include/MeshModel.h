@@ -29,6 +29,8 @@ class MeshModel
 		glm::mat4x4 worldTransform;
 		glm::mat4x4 normalTransformation;
 		glm::vec3 centroid;
+		glm::vec3 minCoordinates;
+		glm::vec3 maxCoordinates;
 		// Helper properties
 		bool shouldRender;
 
