@@ -75,20 +75,20 @@ class Scene {
 		void ScaleActiveModel(const float scaleFactor);
 
 		// Translation functions
-		void TranslateActiveCameraXAxis(const float factor);
-		void TranslateActiveCameraYAxis(const float factor);
-		void TranslateActiveCameraZAxis(const float factor);
-		void TranslateActiveModelXAxis(const float factor);
-		void TranslateActiveModelYAxis(const float factor);
-		void TranslateActiveModelZAxis(const float factor);
+		void TranslateActiveCameraXAxis(const float translationFactor);
+		void TranslateActiveCameraYAxis(const float translationFactor);
+		void TranslateActiveCameraZAxis(const float translationFactor);
+		void TranslateActiveModelXAxis(const float translationFactor);
+		void TranslateActiveModelYAxis(const float translationFactor);
+		void TranslateActiveModelZAxis(const float translationFactor);
 
 		// Rotation functions
-		void RotateActiveCameraXAxis(const float factor);
-		void RotateActiveCameraYAxis(const float factor);
-		void RotateActiveCameraZAxis(const float factor);
-		void RotateActiveModelXAxis(const float factor);
-		void RotateActiveModelYAxis(const float factor);
-		void RotateActiveModelZAxis(const float factor);
+		void RotateActiveCameraXAxis(const float rotationFactor);
+		void RotateActiveCameraYAxis(const float rotationFactor);
+		void RotateActiveCameraZAxis(const float rotationFactor);
+		void RotateActiveModelXAxis(const float rotationFactor);
+		void RotateActiveModelYAxis(const float rotationFactor);
+		void RotateActiveModelZAxis(const float rotationFactor);
 
 		// Transformation related functions
 		void SetWorldTransformation(const glm::mat4x4 world);
