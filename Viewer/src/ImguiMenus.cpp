@@ -345,15 +345,125 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 
 	// 3. Show another simple window.
-	if (showAnotherWindow)
+	if (modelControlWindow)
 	{
-		ImGui::Begin("Another Window", &showAnotherWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		ImGui::Text("Hello from another window!");
-		if (ImGui::Button("Close Me"))
+		ImGui::Text("-------------- Models Control: --------------");
+
+		if (ImGui::Button("Next model"))
 		{
-			showAnotherWindow = false;
+			scene.NextModel();
 		}
-		ImGui::End();
+		if (ImGui::Button("Delete model"))
+		{
+			scene.DeleteActiveModel();
+		}
+		ImGui::Text("Active model: %d", scene.GetActiveModelIndex());
+
+		static glm::mat4x4 activeModelWorldTransformation = scene.GetActiveModelTransformation();
+		std::string sModelTransform = "";
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				sModelTransform.append(std::to_string(activeModelWorldTransformation[i][j]) + " ");
+			}
+			sModelTransform.append("\n");
+		}
+
+		ImGui::Text("Model transformation:\n");
+		ImGui::Text(sModelTransform.c_str());
+
+		//Model scaling:
+		static float modelScaleFactor = 1.0f;
+		ImGui::SliderFloat("scaling factor", &modelScaleFactor, 0.1f, 2.5f);
+
+		if (ImGui::Button("Bigger"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
+		{
+			scene.ScaleActiveModel(modelScaleFactor);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Smaller"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
+		{
+			scene.ScaleActiveModel(1.0f / modelScaleFactor);
+		}
+
+		static bool ShowVerticesNormals = false;
+		static bool ShowFacesNormals = false;
+		static bool ShowBorderCube = false;
+
+		scene.ShowVerticesNormals(ShowVerticesNormals);
+		scene.ShowFacesNormals(ShowFacesNormals);
+		scene.ShowBorderCube(ShowBorderCube);
+
+		ImGui::Checkbox("Show vertices normals", &ShowVerticesNormals);
+		ImGui::Checkbox("Show face normals", &ShowFacesNormals);
+		ImGui::Checkbox("Show Border Cube", &ShowBorderCube);
+
+		//Model moves:
+
+		static float modelMoveFactor = 0.5f;
+		ImGui::SliderFloat("move factor", &modelMoveFactor, 0.1f, 30.f);
+
+		if (ImGui::Button("   Left  "))
+		{
+			scene.TranslateActiveModelXAxis(-modelMoveFactor);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("  Right  "))
+		{
+			scene.TranslateActiveModelXAxis(modelMoveFactor);
+		}
+		if (ImGui::Button("    Up   "))
+		{
+			scene.TranslateActiveModelYAxis(modelMoveFactor);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("   Down  "))
+		{
+			scene.TranslateActiveModelYAxis(-modelMoveFactor);
+		}
+		if (ImGui::Button(" Forward "))
+		{
+			scene.TranslateActiveModelZAxis(modelMoveFactor);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("   Back  "))
+		{
+			scene.TranslateActiveModelZAxis(-modelMoveFactor);
+		}
+
+		//Model rotation:
+
+		static float modelAngle = PI / 18.0f;
+		ImGui::SliderAngle("rotation angle", &modelAngle, 1.0f, 180.0f);
+
+		if ((io.MouseDown[0] && io.MouseDelta.y > 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" +X Axis "))
+		{
+			scene.RotateActiveModelXAxis(modelAngle);
+		}
+		ImGui::SameLine();
+		if ((io.MouseDown[0] && io.MouseDelta.y < 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" -X Axis "))
+		{
+			scene.RotateActiveModelXAxis(-modelAngle);
+		}
+		if ((io.MouseDown[0] && io.MouseDelta.x > 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" +Y Axis "))
+		{
+			scene.RotateActiveModelYAxis(modelAngle);
+		}
+		ImGui::SameLine();
+		if ((io.MouseDown[0] && io.MouseDelta.x < 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" -Y Axis "))
+		{
+			scene.RotateActiveModelYAxis(-modelAngle);
+		}
+		if ((io.MouseDown[1] && io.MouseDelta.x > 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" +Z Axis "))
+		{
+			scene.RotateActiveModelZAxis(modelAngle);
+		}
+		ImGui::SameLine();
+		if ((io.MouseDown[1] && io.MouseDelta.x < 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" -Z Axis "))
+		{
+			scene.RotateActiveModelZAxis(-modelAngle);
+		}
 	}
 
 	// 4. Demonstrate creating a fullscreen menu bar and populating it.
