@@ -46,6 +46,9 @@ class Scene {
 
 		const unsigned int AddPrimitiveModel(PRIMITIVE primitiveModel);
 
+		void NextModel();
+		void DeleteActiveModel();
+
 		// Camera related functions
 		void AddCamera(const Camera& camera);
 		const int GetCameraCount() const;
@@ -57,6 +60,9 @@ class Scene {
 		void NextCamera();
 		void DeleteActiveCamera();
 		const bool ShouldRenderCamera(int cameraIndex);
+		void ShowVerticesNormals(const bool key);
+		void ShowFacesNormals(const bool key);
+		void ShowBorderCube(const bool key);
 
 		// Projection functions
 		void SetOrthographicProjection(const PROJECTION_PARAMETERS);
@@ -66,20 +72,28 @@ class Scene {
 
 		// Scale function
 		void ScaleActiveCamera(const float scaleFactor);
+		void ScaleActiveModel(const float scaleFactor);
 
 		// Translation functions
-		void TranslateActiveCameraXAxis(const float moveFactor);
-		void TranslateActiveCameraYAxis(const float moveFactor);
-		void TranslateActiveCameraZAxis(const float moveFactor);
+		void TranslateActiveCameraXAxis(const float factor);
+		void TranslateActiveCameraYAxis(const float factor);
+		void TranslateActiveCameraZAxis(const float factor);
+		void TranslateActiveModelXAxis(const float factor);
+		void TranslateActiveModelYAxis(const float factor);
+		void TranslateActiveModelZAxis(const float factor);
 
 		// Rotation functions
-		void RotateActiveCameraXAxis(const float moveFactor);
-		void RotateActiveCameraYAxis(const float moveFactor);
-		void RotateActiveCameraZAxis(const float moveFactor);
+		void RotateActiveCameraXAxis(const float factor);
+		void RotateActiveCameraYAxis(const float factor);
+		void RotateActiveCameraZAxis(const float factor);
+		void RotateActiveModelXAxis(const float factor);
+		void RotateActiveModelYAxis(const float factor);
+		void RotateActiveModelZAxis(const float factor);
 
 		// Transformation related functions
 		void SetWorldTransformation(const glm::mat4x4 world);
 		const glm::mat4x4 GetWorldTransformation();
+		glm::mat4x4 GetActiveModelTransformation();
 
 };
 
