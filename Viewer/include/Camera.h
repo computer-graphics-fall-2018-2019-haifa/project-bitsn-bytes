@@ -22,9 +22,11 @@ private:
 	glm::mat4x4 viewTransformation;
 	glm::mat4x4 projectionTransformation;
 	CameraModel *cameraModel;
-	PROJECTION_PARAMETERS frustumParams;
+	PROJECTION_PARAMETERS frustumParameters;
 	int cameraIndex;
 	float zoom;
+
+	void validateProjectionParameters(const PROJECTION_PARAMETERS& parameters);
 
 public:
 	Camera();
@@ -35,11 +37,13 @@ public:
 
 	void SetTransformation(const glm::mat4x4& transformation);
 
-	void SetOrthographicProjection(const PROJECTION_PARAMETERS parameters);
+	void SetProjection(const glm::mat4x4& projection);
 
-	void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters);
+	void SetOrthographicProjection(const PROJECTION_PARAMETERS& parameters);
 
-	void SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters);
+	void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS& parameters);
+
+	void SetFrustumViewVolume(const PROJECTION_PARAMETERS& parameters);
 
 	void SetZoom(const float zoom);
 

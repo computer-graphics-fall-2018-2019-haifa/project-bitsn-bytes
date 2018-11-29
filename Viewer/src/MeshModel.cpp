@@ -7,9 +7,22 @@
 #include <fstream>
 #include <sstream>
 
-MeshModel::MeshModel(const std::string& primitive)
+MeshModel::MeshModel(const MeshModel& primitive)
 {
-
+	faces = primitive.faces;
+	vertices = primitive.vertices;
+	normals = primitive.normals;
+	modelName = primitive.modelName;
+	transformation = primitive.transformation;
+	worldTransformation = primitive.worldTransformation;
+	normalTransformation = primitive.normalTransformation;
+	minCoordinates = primitive.minCoordinates;
+	maxCoordinates = primitive.maxCoordinates;
+	vertexNormals = primitive.vertexNormals;
+	vertexPositions = primitive.vertexPositions;
+	centroid = primitive.centroid;
+	cubeLines = primitive.cubeLines;
+	color = primitive.color;
 }
 
 MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec3>& vertices_, const std::vector<glm::vec3>& normals_, const std::string& modelName_) :
@@ -168,7 +181,7 @@ const std::string& MeshModel::GetModelName() const
 
 // PrimMeshModel implementation
 
-PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(PRIMITIVES.at(primitive))
+PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(Utils::LoadMeshModel(PRIMITIVES.at(primitive)))
 {
 
 }

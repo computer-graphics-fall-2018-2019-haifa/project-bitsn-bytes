@@ -110,4 +110,26 @@ const std::map<PRIMITIVE, std::string> PRIMITIVES = {
 
 };
 
+#define SET_PROJECTION_PARAMETERS(parameters)                                 \
+                                         float left      = parameters.left;   \
+                                         float right     = parameters.right;  \
+                                         float top       = parameters.top;    \
+                                         float bottom    = parameters.bottom; \
+                                         float zNear     = parameters.zNear;  \
+                                         float zFar      = parameters.zFar;   \
+
+#define INIT_CUBE_COORDINATES(maxCoordinates, minCoordinates)                 \
+                                         float cRight    = maxCoordinates.x;  \
+                                         float cTop      = maxCoordinates.y;  \
+                                         float cFar      = maxCoordinates.z;  \
+                                         float cLeft     = minCoordinates.x;  \
+                                         float cBottom   = minCoordinates.y;  \
+                                         float cNear     = minCoordinates.z;  \
+
+#define SET_PERSPESCTIVE_PARAMETERS(parameters)                               \
+                                         float fovy     = parameters.fovy;    \
+                                         float aspect   = parameters.aspect;  \
+                                         float zNear    = parameters.zNear;   \
+                                         float zFar     = parameters.zFar;    \
+
 #endif // !__CONSTANTS_H__
