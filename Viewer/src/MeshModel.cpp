@@ -17,7 +17,7 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	vertices(vertices_),
 	normals(normals_),
 	modelName(modelName_),
-	worldTransform(glm::mat4x4(1)),
+	worldTransformation(glm::mat4x4(1)),
 	minCoordinates({ std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() }),
 	maxCoordinates({ -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() })
 {
@@ -44,19 +44,17 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	float absoluteMax = MAX(maxCoordinates.x, MAX(maxCoordinates.y, maxCoordinates.z));
 
 	glm::vec3 normalizedVector;
-	unsigned int verticesCount = vertices.size();
-	glm::vec3* _vertices = new glm::vec3[verticesCount];
 	unsigned int vertexPositionsCount = faces.size() * FACE_ELEMENTS;
-	glm::vec3* vertexPositions = new glm::vec3[vertexPositionsCount];
+	vertexPositions = new glm::vec3[vertexPositionsCount];
 	unsigned int vertexNormalsCount = normals.size();
-	glm::vec3* vertexNormals = new glm::vec3[vertexNormalsCount];
+	vertexNormals = new glm::vec3[vertexNormalsCount];
 
-	for (unsigned int i = 0; i < verticesCount; i++) {
+	for (unsigned int i = 0; i < vertices.size(); i++) {
 		normalizedVector.x = NORMALIZE_COORDS((vertices[i].x - centroid.x), absoluteMin, absoluteMax);
 		normalizedVector.y = NORMALIZE_COORDS((vertices[i].y - centroid.y), absoluteMin, absoluteMax);
 		normalizedVector.z = NORMALIZE_COORDS((vertices[i].z - centroid.z), absoluteMin, absoluteMax);
 
-		_vertices[i] = normalizedVector;
+		vertices[i] = normalizedVector;
 	}
 
 	// Create triangles via iterating over the faces
@@ -64,9 +62,9 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	for each (Face face in faces) {
 		for (int i = 0; i < FACE_ELEMENTS; i++) {
 			int currentVertexIndex = face.GetVertexIndex(i);
-			float x = _vertices[currentVertexIndex - 1].x;
-			float y = _vertices[currentVertexIndex - 1].y;
-			float z = _vertices[currentVertexIndex - 1].z;
+			float x = vertices[currentVertexIndex - 1].x;
+			float y = vertices[currentVertexIndex - 1].y;
+			float z = vertices[currentVertexIndex - 1].z;
 			vertexPositions[index++] = glm::vec3(x, y, z);
 		}
 	}
@@ -93,19 +91,69 @@ MeshModel::~MeshModel()
 
 }
 
-void MeshModel::SetWorldTransformation(const glm::mat4x4& worldTransform)
+std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* MeshModel::Render()
 {
-	this->worldTransform = worldTransform;
+	std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* verticesData = new std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>();
+	std::vector<glm::vec3> modelVertexPositions;
+	std::vector<glm::vec3> modelVertices;
+	std::vector<glm::vec3> modelVerticesNormals;
+	unsigned int vertexPositionsCount = faces.size() * FACE_ELEMENTS;
+
+	for (size_t i = 0; i < vertexPositionsCount; i++) {
+		glm::vec3 vertexPosition = vertexPositions[i];
+		modelVertexPositions.push_back(vertexPosition);
+	}
+
+	for (size_t i = 0; i < vertices.size(); i++) {
+		glm::vec3 vertex = vertices[i];
+		modelVertices.push_back(vertex);
+	}
+
+	for (size_t i = 0; i < normals.size(); i++) {
+		glm::vec3 normal = vertexNormals[i];
+		modelVerticesNormals.push_back(normal);
+	}
+
+	verticesData->first = modelVertexPositions;
+	verticesData->second.first = modelVertices;
+	verticesData->second.second = modelVerticesNormals;
+
+	return verticesData;
+}
+
+void MeshModel::SetModelTransformation(const glm::mat4x4& transformation_)
+{
+	transformation = transformation_;
+}
+
+const glm::mat4x4 MeshModel::GetModelTransformation() const
+{
+	return transformation;
+}
+
+void MeshModel::SetWorldTransformation(const glm::mat4x4& worldTransformation_)
+{
+	worldTransformation = worldTransformation_;
 }
 
 const glm::mat4x4& MeshModel::GetWorldTransformation() const
 {
-	return worldTransform;
+	return worldTransformation;
 }
 
-void MeshModel::SetColor(const glm::vec4& color)
+void MeshModel::SetNormalTransformation(const glm::mat4x4& normalTransformation_)
 {
-	this->color = color;
+	normalTransformation = normalTransformation_;
+}
+
+const glm::mat4x4 MeshModel::GetNormalTransformation() const
+{
+	return normalTransformation;
+}
+
+void MeshModel::SetColor(const glm::vec4& color_)
+{
+	color = color_;
 }
 
 const glm::vec4& MeshModel::GetColor() const
@@ -113,7 +161,7 @@ const glm::vec4& MeshModel::GetColor() const
 	return color;
 }
 
-const std::string& MeshModel::GetModelName()
+const std::string& MeshModel::GetModelName() const
 {
 	return modelName;
 }
@@ -126,13 +174,13 @@ PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(PRIMITIVES.a
 }
 
 // CameraModel implementation
-CameraModel::CameraModel(glm::vec4 _coordinates) : PrimMeshModel(CAMERA)
+CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(CAMERA)
 {
-	coordinates = _coordinates;
-	this->SetModelRenderingState(false);
+	coordinates = coordinates_;
+	SetModelRenderingState(false);
 }
 
-glm::vec4 CameraModel::GetCoordinates()
+const glm::vec4 CameraModel::GetCoordinates() const
 {
 	return coordinates;
 }

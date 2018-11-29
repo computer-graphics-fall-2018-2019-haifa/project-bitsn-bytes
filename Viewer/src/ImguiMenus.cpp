@@ -91,7 +91,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Add new camera"))
 		{
 			Camera camera = Camera({ eye[0], eye[1], eye[2], 1.0f }, { at[0], at[1], at[2], 1.0f }, { 0, 1, 0, 1.0f });
-			scene.AddCamera(camera);
+			scene.AddCamera(&camera);
 		}
 
 		ImGui::SameLine();

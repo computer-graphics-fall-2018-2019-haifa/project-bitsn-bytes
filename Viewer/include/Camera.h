@@ -33,17 +33,23 @@ public:
 
 	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 
-	void SetOrthographicProjection(const PROJECTION_PARAMETERS);
+	void SetTransformation(const glm::mat4x4& transformation);
 
-	void SetPerspectiveProjection(const PROJECTION_PARAMETERS);
+	void SetOrthographicProjection(const PROJECTION_PARAMETERS parameters);
 
-	void SetFrustumViewVolume(const PROJECTION_PARAMETERS projParams);
+	void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters);
+
+	void SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters);
 
 	void SetZoom(const float zoom);
 
 	void SetCameraModel(CameraModel* model);
 
 	CameraModel* GetCameraModel();
+
+	glm::mat4x4 GetTransformation();
+
+	glm::mat4x4 GetProjection();
 };
 
 #endif // !__CAMERA_H__

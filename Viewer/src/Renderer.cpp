@@ -3,11 +3,14 @@
 #include "Renderer.h"
 #include "InitShader.h"
 #include "MeshModel.h"
+#include "Utils.h"
+#include "Constants.h"
 #include <imgui/imgui.h>
 #include <vector>
 #include <cmath>
 
-#define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
+#define INDEX(width, x, y, c) ((x) + (y) * (width)) * 3 + (c)
+#define IS_CAMERA true
 
 Renderer::Renderer(int viewportWidth, int viewportHeight, int viewportX, int viewportY) :
 	colorBuffer(nullptr),
@@ -72,31 +75,240 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 	createOpenGLBuffer();
 }
 
-void Renderer::Render(const Scene& scene)
+void Renderer::Render(Scene& scene)
 {
-	//#############################################
-	//## You should override this implementation ##
-	//## Here you should render the scene.       ##
-	//#############################################
+	if (scene.GetActiveCameraIndex() != DISABLED) {
+		Camera* activeCamera = scene.GetActiveCamera();
+		SetCameraTransformation(inverse(activeCamera->GetTransformation()));
+		SetProjection(activeCamera->GetProjection());
+	}
 
-	// Draw a chess board in the middle of the screen
-	for (int i = 100; i < viewportWidth - 100; i++)
+	DrawAxis(scene);
+
+	std::vector<std::shared_ptr<MeshModel>> models = scene.GetModels();
+	std::vector<Camera*> cameras = scene.GetCameras();
+
+	for each (auto model in models)
 	{
-		for (int j = 100; j < viewportHeight - 100; j++)
-		{
-			int mod_i = i / 50;
-			int mod_j = j / 50;
+		const std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* modelVertices;
 
-			int odd = (mod_i + mod_j) % 2;
-			if (odd)
-			{
-				putPixel(i, j, glm::vec3(0, 1, 0));
-			}
-			else
-			{
-				putPixel(i, j, glm::vec3(1, 0, 0));
-			}
+		modelVertices = model->Render();
+		SetObjectMatrices(model->GetModelTransformation(), model->GetNormalTransformation());
+		SetWorldTransformation(scene.GetWorldTransformation());
+
+		DrawTriangles(scene, &modelVertices->first, scene.ShouldShowFacesNormals(), &model->GetCentroid(), 1);
+
+
+		if (scene.ShouldShowVerticesNormals() && !modelVertices->second.second.empty()) {
+			DrawVerticesNormals(scene, modelVertices->second.first, modelVertices->second.second);
 		}
+
+		if (scene.ShouldShowBorderCube()) {
+			DrawBorderCube(scene, model->GetBorderCube());
+		}
+
+		delete modelVertices;
+	}
+
+	for each(auto camera in cameras)
+	{
+		CameraModel* cameraModel = (CameraModel*)camera->GetCameraModel();
+		if (cameraModel->IsModelRenderingActive() && camera != scene.GetActiveCamera()) {
+			Camera* activeCamera = scene.GetActiveCamera();
+			SetCameraTransformation(inverse(activeCamera->GetTransformation()));
+			SetProjection(activeCamera->GetProjection());
+
+			SetWorldTransformation(scene.GetWorldTransformation());
+
+			glm::mat4x4 cameraTransformation = glm::mat4x4(SCALING_MATRIX4(1.f / 4.f)) * camera->GetTransformation();
+
+			SetObjectMatrices(cameraTransformation, glm::mat4x4(I_MATRIX));
+
+			const std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* cameraVertices = ((MeshModel*)cameraModel)->Render();
+
+			DrawTriangles(scene, &cameraVertices->first, FALSE, NULL, 1, IS_CAMERA);
+
+			delete cameraVertices;
+		}
+	}
+
+	SwapBuffers();
+}
+
+void Renderer::DrawAxis(Scene& scene)
+{
+	glm::vec3 axisX		= { 1, 0, 0 };
+	glm::vec3 axisY		= { 0, 1, 0 };
+	glm::vec3 axisZ		= { 0, 0, 1 };
+	glm::vec3 zeroPoint = { 0, 0, 0 };
+
+	axisX = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(axisX));
+	axisY = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(axisY));
+	axisZ = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(axisZ));
+	zeroPoint = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(zeroPoint));
+
+	DrawLine(ToViewPlane(zeroPoint), ToViewPlane(axisX * 5.f), COLOR(X_COL));
+	DrawLine(ToViewPlane(zeroPoint), ToViewPlane(axisY * 5.f), COLOR(Y_COL));
+	DrawLine(ToViewPlane(zeroPoint), ToViewPlane(axisZ * 5.f), COLOR(YELLOW));
+}
+
+void Renderer::DrawLine(const glm::uvec2& p1, const glm::uvec2& p2, const glm::vec3& color)
+{
+	float dx, dy;
+
+	float x1 = p1.x;
+	float x2 = p2.x;
+	float y1 = p1.y;
+	float y2 = p2.y;
+
+	const bool bStep = IsSlopeBiggerThanOne(x1, x2, y1, y2);
+
+	OrderPoints(x1, x2, y1, y2);
+
+	GetDeltas(x1, x2, y1, y2, &dx, &dy);
+
+	float error = dx / 2.0f;
+	const int ystep = (y1 < y2) ? 1 : -1;
+	int y = (int)y1;
+
+	const int maxX = (int)x2;
+
+	for (int x = (int)x1; x < maxX; x++)
+	{
+		PutPixel(x, y, bStep, color);
+
+		yStepErrorUpdate(dx, dy, error, y, ystep);
+	}
+}
+
+glm::uvec2 Renderer::ToViewPlane(const glm::vec2& point)
+{
+	glm::vec2 screenPoint;
+
+	screenPoint.x = ((point.x + 1) * viewportWidth / 2.0f);
+	screenPoint.y = ((point.y + 1) * viewportHeight / 2.0f);
+
+	screenPoint.x = round((screenPoint.x - (viewportWidth / 2.0f)) * (500.0f / viewportWidth) + (viewportWidth / 2.0f));
+	screenPoint.y = round((screenPoint.y - (viewportHeight / 2.0f)) * (500.0f / viewportHeight) + (viewportHeight / 2.0f));
+
+	return glm::vec2(screenPoint.x, screenPoint.y);
+}
+
+void Renderer::PutPixel(int x, int y, bool step, const glm::vec3& color)
+{
+	if (step)
+	{
+		PutPixel(y, x, color);
+	}
+	else
+	{
+		PutPixel(x, y, color);
+	}
+}
+
+void Renderer::DrawTriangles(Scene& scene, const std::vector<glm::vec3>* vertices, bool shouldDrawFaceNormals /*= false*/, const glm::vec3* modelCentroid /*= NULL*/, UINT32 normScaleRate /*= 1*/, bool isCamera /*= false*/)
+{
+	std::vector<glm::vec3>::const_iterator it = vertices->begin();
+
+	while (it != vertices->end())
+	{
+		glm::vec3 p1 = *(it++);
+		if (it == vertices->end()) break;
+		glm::vec3 p2 = *(it++);
+		if (it == vertices->end()) break;
+		glm::vec3 p3 = *(it++);
+
+		glm::vec3 nrm1 = p1;
+		glm::vec3 nrm2 = p2;
+		glm::vec3 nrm3 = p3;
+
+		p1 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p1));
+		p2 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p2));
+		p3 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p3));
+
+		DrawLine(ToViewPlane(p1), ToViewPlane(p2), COLOR(WHITE));
+		DrawLine(ToViewPlane(p2), ToViewPlane(p3), COLOR(WHITE));
+		DrawLine(ToViewPlane(p3), ToViewPlane(p1), COLOR(WHITE));
+
+		if (scene.ShouldShowFacesNormals())
+		{
+			glm::vec3 subs1 = nrm3 - nrm1;
+			glm::vec3 subs2 = nrm2 - nrm1;
+			glm::vec3 faceNormal = glm::cross(subs1, subs2);
+
+			glm::vec3 faceCenter = (nrm1 + nrm2 + nrm3) / 3.0f;
+
+			glm::vec3 normalizedFaceNormal = Utils::IsVecEqual(faceNormal, glm::vec3(0, 0, 0)) ? faceNormal : glm::normalize(faceNormal);
+
+			normalizedFaceNormal /= 2.5f;
+			glm::vec3 nP1 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(faceCenter));
+			glm::vec3 nP2 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(faceCenter + normalizedFaceNormal));
+
+			DrawLine(ToViewPlane(nP1), ToViewPlane(nP2), COLOR(LIME));
+		}
+	}
+}
+
+void Renderer::DrawVerticesNormals(Scene& scene, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals)
+{
+	for (int i = 0; i < normals.size() && i < vertices.size(); i++)
+	{
+		glm::vec3 vertex = vertices[i];
+		glm::vec3 vertexNormal = normals[i];
+
+		glm::vec3 nP1 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(vertex));
+		glm::vec3 nP2 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(vertex + vertexNormal / 2.5f));
+
+		DrawLine(ToViewPlane(nP1), ToViewPlane(nP2), COLOR(RED));
+	}
+}
+
+void Renderer::DrawBorderCube(Scene& scene, CUBE_LINES& borderCube)
+{
+	for each (std::pair<glm::vec3, glm::vec3> line in borderCube.line)
+	{
+		glm::vec3 pStart = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(line.first));
+		glm::vec3 pEnd = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(line.second));
+
+		DrawLine(ToViewPlane(pStart), ToViewPlane(pEnd), COLOR(BLUE));
+	}
+}
+
+void Renderer::PutPixel(int i, int j, const glm::vec3& color)
+{
+	if (i < 0) return; if (i >= viewportWidth) return;
+	if (j < 0) return; if (j >= viewportHeight) return;
+	colorBuffer[INDEX(viewportWidth, i, j, 0)] = color.x;
+	colorBuffer[INDEX(viewportWidth, i, j, 1)] = color.y;
+	colorBuffer[INDEX(viewportWidth, i, j, 2)] = color.z;
+}
+
+void Renderer::OrderPoints(float& x1, float& x2, float& y1, float& y2)
+{
+	if (IsSlopeBiggerThanOne(x1, x2, y1, y2)) {
+		std::swap(x1, y1);
+		std::swap(x2, y2);
+	}
+
+	if (x1 > x2) {
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
+}
+
+void Renderer::GetDeltas(IN float x1, IN float x2, IN float y1, IN float y2, OUT float* pDx, OUT float* pDy)
+{
+	*pDx = x2 - x1;
+	*pDy = fabs(y2 - y1);
+}
+
+void Renderer::yStepErrorUpdate(float dx, float dy, float& error, int& y, const int& ystep)
+{
+	error -= dy;
+	if (error < 0)
+	{
+		y += ystep;
+		error += dx;
 	}
 }
 

@@ -22,53 +22,56 @@ class Renderer;
 class Scene {
 	private:
 		std::vector<std::shared_ptr<MeshModel>> models;
-		std::vector<Camera> cameras;
+		std::vector<Camera*> cameras;
 
 		int activeCameraIndex;
 		int activeModelIndex;
-		Renderer *renderer;
 
 		glm::mat4x4 worldTransformation;
 
-		bool drawVecNormal;
-		bool drawFaceNormal;
-		bool showBorderCube;
+		bool drawVerticesNormals;
+		bool drawFacesNormals;
+		bool drawBorderCube;
 
 	public:
 		Scene();
-		Scene(Renderer *renderer_);
+
 		// Model related functions
 		void AddModel(const std::shared_ptr<MeshModel>& model);
 		const int GetModelCount() const;
-
 		void SetActiveModelIndex(int index);
 		const int GetActiveModelIndex() const;
-
 		const unsigned int AddPrimitiveModel(PRIMITIVE primitiveModel);
-
 		void NextModel();
 		void DeleteActiveModel();
+		glm::mat4x4 GetActiveModelTransformation();
+		std::vector<std::shared_ptr<MeshModel>>& GetModels();
 
 		// Camera related functions
-		void AddCamera(const Camera& camera);
+		void AddCamera(Camera* camera);
 		const int GetCameraCount() const;
-
-		// Actions
 		void SetActiveCameraIndex(int index);
 		const int GetActiveCameraIndex() const;
 		Camera* GetActiveCamera();
 		void NextCamera();
 		void DeleteActiveCamera();
 		const bool ShouldRenderCamera(int cameraIndex);
+		const glm::mat4x4 GetActiveCameraTransformation();
+		const glm::mat4x4 GetActiveCameraProjection();
+		std::vector<Camera*> GetCameras();
+
+		// Actions
 		void ShowVerticesNormals(const bool key);
 		void ShowFacesNormals(const bool key);
 		void ShowBorderCube(const bool key);
+		bool ShouldShowVerticesNormals() { return drawVerticesNormals; }
+		bool ShouldShowFacesNormals() { return drawFacesNormals; }
+		bool ShouldShowBorderCube() { return drawBorderCube; }
 
 		// Projection functions
 		void SetOrthographicProjection(const PROJECTION_PARAMETERS);
 		void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS);
-		const glm::mat4x4 GetActiveCameraTransformation();
-		const glm::mat4x4 GetActiveCameraProjection();
+		void SetFrustumViewVolume(const PROJECTION_PARAMETERS);
 
 		// Scale function
 		void ScaleActiveCamera(const float scaleFactor);
@@ -93,8 +96,6 @@ class Scene {
 		// Transformation related functions
 		void SetWorldTransformation(const glm::mat4x4 world);
 		const glm::mat4x4 GetWorldTransformation();
-		glm::mat4x4 GetActiveModelTransformation();
-
 };
 
 #endif // !__SCENE_H__

@@ -24,17 +24,22 @@ void Camera::SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const gl
 
 }
 
-void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS)
+void Camera::SetTransformation(const glm::mat4x4& transformation)
 {
 
 }
 
-void Camera::SetPerspectiveProjection(const PROJECTION_PARAMETERS)
+void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS parameters)
 {
 
 }
 
-void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS)
+void Camera::SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters)
+{
+
+}
+
+void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters)
 {
 
 }
@@ -49,6 +54,17 @@ void Camera::SetCameraModel(CameraModel* model)
 	cameraModel = model;
 }
 
-CameraModel* Camera::GetCameraModel() {
+CameraModel* Camera::GetCameraModel()
+{
 	return cameraModel;
+}
+
+glm::mat4x4 Camera::GetTransformation()
+{
+	return viewTransformation;
+}
+
+glm::mat4x4 Camera::GetProjection()
+{
+	return projectionTransformation;
 }

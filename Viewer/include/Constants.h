@@ -41,6 +41,7 @@
 #define MAX(a, b)							a > b ? a : b
 #define TO_RADIAN(angle)					angle * PI / 180.0f
 #define INDEX(width, x, y, c)				(x + y * width) * 3 + c
+#define COLOR(color)						Utils::GetColor(color)
 
 // Enumerators
 typedef enum _COLOR_ {

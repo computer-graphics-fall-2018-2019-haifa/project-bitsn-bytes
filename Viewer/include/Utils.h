@@ -18,11 +18,16 @@ class Utils
 		static glm::vec2 Vec2fFromStream(std::istream& issLine);
 		static MeshModel LoadMeshModel(const std::string& filePath);
 
-		// Add here more static utility functions...
-		// For example:
-		//	1. function that gets an angle, and returns a rotation matrix around a certian axis
-		//	2. function that gets a std::vector, and returns a translation matrix
-		//	3. anything else that may be useful in global scope
+		static glm::vec4 ToHomogeneousForm(const glm::vec3& normalForm);
+		static glm::vec4 ExpandToVec4(const glm::vec3& vector);
+		static glm::vec3 ToCartesianForm(const glm::vec4& homogeneousForm);
+		static glm::vec4 Cross(const glm::vec4 & lVector4, const glm::vec4 & rVector4);
+		static glm::vec3 FindCentralVec(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+
+		static bool IsVecEqual(glm::vec3 v1, glm::vec3 v2);
+		static bool IsVecEqual(glm::vec4 v1, glm::vec4 v2);
+		
+		static glm::vec3 GetColor(COLOR color);
 
 	private:
 		static std::string GetFileName(const std::string& filePath);

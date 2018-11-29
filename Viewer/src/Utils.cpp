@@ -111,3 +111,85 @@ std::string Utils::GetFileName(const std::string& filePath)
 
 	return filePath.substr(index + 1, len - index);
 }
+
+glm::vec4 Utils::ToHomogeneousForm(const glm::vec3& normalForm)
+{
+	return glm::vec4(normalForm.x, normalForm.y, normalForm.z, 1);
+}
+
+glm::vec4 Utils::ExpandToVec4(const glm::vec3 & vector)
+{
+	return glm::vec4(vector.x, vector.y, vector.z, 0);
+}
+
+glm::vec3 Utils::ToCartesianForm(const glm::vec4& homogeneousForm)
+{
+	return glm::vec3(homogeneousForm.x / homogeneousForm[3], homogeneousForm.y / homogeneousForm[3], homogeneousForm.z / homogeneousForm[3]);
+}
+
+glm::vec4 Utils::Cross(const glm::vec4 & lVector4, const glm::vec4 & rVector4)
+{
+	return ToHomogeneousForm(glm::cross(ToCartesianForm(lVector4), ToCartesianForm(rVector4)));
+}
+
+glm::vec3 Utils::FindCentralVec(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+{
+	return 0.5f*(p2 + p3) - p1;
+}
+
+bool Utils::IsVecEqual(glm::vec3 v1, glm::vec3 v2)
+{
+	bool bEquals = true;
+
+	bEquals &= fabs(v1.x - v2.x) < std::numeric_limits<float>::epsilon();
+	bEquals &= fabs(v1.y - v2.y) < std::numeric_limits<float>::epsilon();
+	bEquals &= fabs(v1.z - v2.z) < std::numeric_limits<float>::epsilon();
+
+	return bEquals;
+
+
+}
+
+bool Utils::IsVecEqual(glm::vec4 v1, glm::vec4 v2)
+{
+	bool bEquals = true;
+
+	bEquals &= fabs(v1.x - v2.x) < std::numeric_limits<float>::epsilon();
+	bEquals &= fabs(v1.y - v2.y) < std::numeric_limits<float>::epsilon();
+	bEquals &= fabs(v1.z - v2.z) < std::numeric_limits<float>::epsilon();
+	bEquals &= fabs(v1.w - v2.w) < std::numeric_limits<float>::epsilon();
+
+	return bEquals;
+}
+
+glm::vec3 Utils::GetColor(COLOR color)
+{
+	switch (color)
+	{
+		case WHITE:
+			return { 1.0f, 1.0f, 1.0f };
+		case BLACK:
+			return { 0.f, 0.f, 0.f };
+		case LIME:
+			return { 0, 1.0f ,0 };
+		case GREEN:
+			return { 0, 0.5f, 0 };
+		case BLUE:
+			return { 0, 0 ,1.0f };
+		case RED:
+			return { 1.0f, 0 ,0 };
+		case YELLOW:
+			return { 1.0f,1.0f,0 };
+		case X_COL:
+			return { 1.f,102.f / 255.f,0.f };
+		case Y_COL:
+			return { 153.f / 255.f,204.f / 255.f,0.f };
+		case Z_COL:
+			return { 51.f / 255.f, 102.f / 255, 1.f };
+
+
+		default:
+			return { 0.f, 0.f, 0.f };
+
+	}
+}
