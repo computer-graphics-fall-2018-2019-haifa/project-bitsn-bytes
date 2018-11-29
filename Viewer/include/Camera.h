@@ -49,7 +49,7 @@ public:
 
 	void SetCameraModel(CameraModel* model);
 
-	CameraModel* GetCameraModel();
+	MeshModel* GetCameraModel();
 
 	glm::mat4x4 GetTransformation();
 

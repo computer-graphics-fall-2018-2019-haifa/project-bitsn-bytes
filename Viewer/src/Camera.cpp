@@ -14,6 +14,7 @@ Camera::Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) :
 	zoom(1.0)
 {
 	SetCameraLookAt(eye, at, up);
+	cameraModel = new CameraModel(eye);
 }
 
 Camera::~Camera()
@@ -114,9 +115,9 @@ void Camera::SetCameraModel(CameraModel* model)
 	cameraModel = model;
 }
 
-CameraModel* Camera::GetCameraModel()
+MeshModel* Camera::GetCameraModel()
 {
-	return cameraModel;
+	return &cameraModel->GetModel();
 }
 
 glm::mat4x4 Camera::GetTransformation()

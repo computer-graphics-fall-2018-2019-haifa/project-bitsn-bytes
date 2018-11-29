@@ -112,7 +112,7 @@ void Renderer::Render(Scene& scene)
 
 	for each(auto camera in cameras)
 	{
-		CameraModel* cameraModel = (CameraModel*)camera->GetCameraModel();
+		MeshModel* cameraModel = camera->GetCameraModel();
 		if (cameraModel->IsModelRenderingActive() && camera != scene.GetActiveCamera()) {
 			Camera* activeCamera = scene.GetActiveCamera();
 			SetCameraTransformation(inverse(activeCamera->GetTransformation()));

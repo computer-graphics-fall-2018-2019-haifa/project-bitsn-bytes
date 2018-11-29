@@ -187,10 +187,10 @@ PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(Utils::LoadM
 }
 
 // CameraModel implementation
-CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(CAMERA)
+CameraModel::CameraModel(glm::vec4 coordinates_)
 {
+	model = Utils::LoadMeshModel(PRIMITIVES.at(CAMERA));
 	coordinates = coordinates_;
-	SetModelRenderingState(false);
 }
 
 const glm::vec4 CameraModel::GetCoordinates() const
@@ -201,4 +201,9 @@ const glm::vec4 CameraModel::GetCoordinates() const
 void CameraModel::SetCoordinates(const glm::vec4& coordinates_)
 {
 	coordinates = coordinates_;
+}
+
+MeshModel& CameraModel::GetModel()
+{
+	return model;
 }

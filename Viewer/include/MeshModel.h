@@ -38,6 +38,7 @@ class MeshModel
 		bool shouldRender;
 
 	public:
+		MeshModel() { ; }
 		MeshModel(const MeshModel& primitive);
 		MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
 		virtual ~MeshModel();
@@ -76,16 +77,17 @@ class PrimMeshModel : public MeshModel
 		PrimMeshModel(const PRIMITIVE primitive);
 };
 
-class CameraModel : public PrimMeshModel
+class CameraModel
 {
 	private:
-		const PRIMITIVE model = CAMERA;
+		MeshModel model;
 		glm::vec4 coordinates;
 
 	public:
 		CameraModel(glm::vec4 coordinates);
 		const glm::vec4 GetCoordinates() const;
 		void SetCoordinates(const glm::vec4& coordinates_);
+		MeshModel& GetModel();
 };
 
 #endif // !__MESHMODEL_H__
