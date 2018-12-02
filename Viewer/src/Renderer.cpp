@@ -28,15 +28,6 @@ Renderer::~Renderer()
 	}
 }
 
-void Renderer::putPixel(int i, int j, const glm::vec3& color)
-{
-	if (i < 0) return; if (i >= viewportWidth) return;
-	if (j < 0) return; if (j >= viewportHeight) return;
-	colorBuffer[INDEX(viewportWidth, i, j, 0)] = color.x;
-	colorBuffer[INDEX(viewportWidth, i, j, 1)] = color.y;
-	colorBuffer[INDEX(viewportWidth, i, j, 2)] = color.z;
-}
-
 void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 {
 	if (colorBuffer)
@@ -49,7 +40,7 @@ void Renderer::createBuffers(int viewportWidth, int viewportHeight)
 	{
 		for (int y = 0; y < viewportHeight; y++)
 		{
-			putPixel(x, y, glm::vec3(0.0f, 0.0f, 0.0f));
+			PutPixel(x, y, glm::vec3(0.0f, 0.0f, 0.0f));
 		}
 	}
 }
@@ -60,7 +51,7 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 	{
 		for (int j = 0; j < viewportHeight; j++)
 		{
-			putPixel(i, j, color);
+			PutPixel(i, j, color);
 		}
 	}
 }
@@ -194,6 +185,15 @@ glm::uvec2 Renderer::ToViewPlane(const glm::vec2& point)
 	return glm::vec2(screenPoint.x, screenPoint.y);
 }
 
+void Renderer::PutPixel(int i, int j, const glm::vec3& color)
+{
+	if (i < 0) return; if (i >= viewportWidth) return;
+	if (j < 0) return; if (j >= viewportHeight) return;
+	colorBuffer[INDEX(viewportWidth, i, j, 0)] = color.x;
+	colorBuffer[INDEX(viewportWidth, i, j, 1)] = color.y;
+	colorBuffer[INDEX(viewportWidth, i, j, 2)] = color.z;
+}
+
 void Renderer::PutPixel(int x, int y, bool step, const glm::vec3& color)
 {
 	if (step)
@@ -272,15 +272,6 @@ void Renderer::DrawBorderCube(Scene& scene, CUBE_LINES& borderCube)
 
 		DrawLine(ToViewPlane(pStart), ToViewPlane(pEnd), COLOR(BLUE));
 	}
-}
-
-void Renderer::PutPixel(int i, int j, const glm::vec3& color)
-{
-	if (i < 0) return; if (i >= viewportWidth) return;
-	if (j < 0) return; if (j >= viewportHeight) return;
-	colorBuffer[INDEX(viewportWidth, i, j, 0)] = color.x;
-	colorBuffer[INDEX(viewportWidth, i, j, 1)] = color.y;
-	colorBuffer[INDEX(viewportWidth, i, j, 2)] = color.z;
 }
 
 void Renderer::OrderPoints(float& x1, float& x2, float& y1, float& y2)

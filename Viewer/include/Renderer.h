@@ -25,7 +25,6 @@ private:
 	int viewportX;
 	int viewportY;
 
-	void putPixel(int x, int y, const glm::vec3& color);
 	void createBuffers(int viewportWidth, int viewportHeight);
 
 	GLuint glScreenTex;
@@ -44,7 +43,7 @@ private:
 	void OrderPoints(float& x1, float& x2, float& y1, float& y2);
 	bool IsSlopeBiggerThanOne(float x1, float x2, float y1, float y2) { return (fabs(y2 - y1) > fabs(x2 - x1)); }
 
-	void PutPixel(int i, int j, const glm::vec3& color);
+	void PutPixel(int x, int y, const glm::vec3& color);
 	void PutPixel(int x, int y, bool steep, const glm::vec3& color);
 
 	void GetDeltas(IN float x1, IN float x2, IN float y1, IN float y2, OUT float* pDx, OUT float* pDy);
