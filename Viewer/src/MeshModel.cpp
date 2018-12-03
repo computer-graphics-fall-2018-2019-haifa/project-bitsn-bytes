@@ -30,6 +30,7 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	vertices(vertices_),
 	normals(normals_),
 	modelName(modelName_),
+	centroid({ 0, 0, 0 }),
 	worldTransformation(glm::mat4x4(1)),
 	minCoordinates({ std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() }),
 	maxCoordinates({ -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() })
@@ -187,9 +188,8 @@ PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(Utils::LoadM
 }
 
 // CameraModel implementation
-CameraModel::CameraModel(glm::vec4 coordinates_)
+CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(CAMERA)
 {
-	model = Utils::LoadMeshModel(PRIMITIVES.at(CAMERA));
 	coordinates = coordinates_;
 }
 
@@ -201,9 +201,4 @@ const glm::vec4 CameraModel::GetCoordinates() const
 void CameraModel::SetCoordinates(const glm::vec4& coordinates_)
 {
 	coordinates = coordinates_;
-}
-
-MeshModel& CameraModel::GetModel()
-{
-	return model;
 }

@@ -33,6 +33,8 @@ public:
 	Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up);
 	~Camera();
 
+	std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* Render() { return cameraModel->Render(); }
+
 	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 
 	void SetTransformation(const glm::mat4x4& transformation);
@@ -48,6 +50,10 @@ public:
 	void SetZoom(const float zoom);
 
 	void SetCameraModel(CameraModel* model);
+
+	void SetModelRenderingState(bool state);
+
+	const bool IsModelRenderingActive() { return cameraModel->IsModelRenderingActive(); }
 
 	MeshModel* GetCameraModel();
 

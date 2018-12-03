@@ -15,9 +15,9 @@
 // Titles & Descriptions
 #define WINDOW_TITLE						"Mesh Viewer"
 // Source files
-#define CAMERA_SOURCE						"Data/camera.obj"
-#define SPHERE_SOURCE						"Data/shpere.obj"
-#define CUBE_SOURCE							"Data/cube.obj"
+#define CAMERA_SOURCE						"..\\Data\\camera.obj"
+#define SPHERE_SOURCE						"..\\Data\\sphere.obj"
+#define CUBE_SOURCE							"..\\Data\\cube.obj"
 // Constants
 #define DISABLED							-1
 #define PI									3.141592653589793238462643383279502884L
@@ -110,26 +110,26 @@ const std::map<PRIMITIVE, std::string> PRIMITIVES = {
 
 };
 
-#define SET_PROJECTION_PARAMETERS(parameters)                                 \
-                                         float left      = parameters.left;   \
-                                         float right     = parameters.right;  \
-                                         float top       = parameters.top;    \
-                                         float bottom    = parameters.bottom; \
-                                         float zNear     = parameters.zNear;  \
-                                         float zFar      = parameters.zFar;   \
+#define SET_PROJECTION_PARAMETERS(parameters)                                \
+                                         float left     = parameters.left;   \
+                                         float right    = parameters.right;  \
+                                         float top      = parameters.top;    \
+                                         float bottom   = parameters.bottom; \
+                                         float zNear    = parameters.zNear;  \
+                                         float zFar     = parameters.zFar;   \
 
-#define INIT_CUBE_COORDINATES(maxCoordinates, minCoordinates)                 \
-                                         float cRight    = maxCoordinates.x;  \
-                                         float cTop      = maxCoordinates.y;  \
-                                         float cFar      = maxCoordinates.z;  \
-                                         float cLeft     = minCoordinates.x;  \
-                                         float cBottom   = minCoordinates.y;  \
-                                         float cNear     = minCoordinates.z;  \
+#define INIT_CUBE_COORDINATES(maxCoordinates, minCoordinates)                \
+                                         float cRight   = maxCoordinates.x;  \
+                                         float cTop     = maxCoordinates.y;  \
+                                         float cFar     = maxCoordinates.z;  \
+                                         float cLeft    = minCoordinates.x;  \
+                                         float cBottom  = minCoordinates.y;  \
+                                         float cNear	= minCoordinates.z;  \
 
-#define SET_PERSPESCTIVE_PARAMETERS(parameters)                               \
-                                         float fovy     = parameters.fovy;    \
-                                         float aspect   = parameters.aspect;  \
-                                         float zNear    = parameters.zNear;   \
-                                         float zFar     = parameters.zFar;    \
+#define SET_PERSPESCTIVE_PARAMETERS(parameters)                              \
+                                         float fovy		= parameters.fovy;   \
+                                         float aspect   = parameters.aspect; \
+                                         float zNear    = parameters.zNear;  \
+                                         float zFar     = parameters.zFar;   \
 
 #endif // !__CONSTANTS_H__

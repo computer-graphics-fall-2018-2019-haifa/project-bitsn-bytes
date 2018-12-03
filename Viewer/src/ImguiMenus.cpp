@@ -117,7 +117,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Checkbox("Show Camera", &showCamera))
 		{
 			if (scene.GetActiveCamera() != NULL) {
-				scene.GetActiveCamera()->GetCameraModel()->SetModelRenderingState(showCamera);
+				scene.GetActiveCamera()->SetModelRenderingState(showCamera);
 			}
 		}
 

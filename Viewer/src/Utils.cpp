@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <Windows.h>
 
 glm::vec3 Utils::Vec3fFromStream(std::istream& issLine)
 {
@@ -25,7 +26,18 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
-	std::ifstream ifile(filePath.c_str());
+	std::string fullPath;
+
+	if (filePath.find("obj_examples") != std::string::npos)
+	{
+		fullPath = filePath;
+	}
+	else 
+	{
+		fullPath = GetWorkingDirectory() + filePath;
+	}
+
+	std::ifstream ifile(fullPath.c_str());
 
 	if (ifile.fail()) {
 		fprintf(stderr, "An error occured while trying to open %s", Utils::GetFileName(filePath));
@@ -74,6 +86,13 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 	}
 
 	return MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
+}
+
+std::string Utils::GetWorkingDirectory()
+{
+	char buf[256];
+	GetCurrentDirectoryA(256, buf);
+	return std::string(buf) + '\\';
 }
 
 std::string Utils::GetFileName(const std::string& filePath)

@@ -103,8 +103,7 @@ void Renderer::Render(Scene& scene)
 
 	for each(auto camera in cameras)
 	{
-		MeshModel* cameraModel = camera->GetCameraModel();
-		if (cameraModel->IsModelRenderingActive() && camera != scene.GetActiveCamera()) {
+		if (camera->IsModelRenderingActive() && camera != scene.GetActiveCamera()) {
 			Camera* activeCamera = scene.GetActiveCamera();
 			SetCameraTransformation(inverse(activeCamera->GetTransformation()));
 			SetProjection(activeCamera->GetProjection());
@@ -115,7 +114,7 @@ void Renderer::Render(Scene& scene)
 
 			SetObjectMatrices(cameraTransformation, glm::mat4x4(I_MATRIX));
 
-			const std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* cameraVertices = ((MeshModel*)cameraModel)->Render();
+			const std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* cameraVertices = camera->Render();
 
 			DrawTriangles(scene, &cameraVertices->first, FALSE, NULL, 1, IS_CAMERA);
 
@@ -290,7 +289,6 @@ void Renderer::OrderPoints(float& x1, float& x2, float& y1, float& y2)
 void Renderer::GetDeltas(IN float x1, IN float x2, IN float y1, IN float y2, OUT float* pDx, OUT float* pDy)
 {
 	*pDx = x2 - x1;
-	*pDy = fabs(y2 - y1);
 }
 
 void Renderer::yStepErrorUpdate(float dx, float dy, float& error, int& y, const int& ystep)

@@ -115,9 +115,14 @@ void Camera::SetCameraModel(CameraModel* model)
 	cameraModel = model;
 }
 
+void Camera::SetModelRenderingState(bool state)
+{
+	cameraModel->SetModelRenderingState(state);
+}
+
 MeshModel* Camera::GetCameraModel()
 {
-	return &cameraModel->GetModel();
+	return cameraModel;
 }
 
 glm::mat4x4 Camera::GetTransformation()

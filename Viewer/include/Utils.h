@@ -31,6 +31,7 @@ class Utils
 
 	private:
 		static std::string GetFileName(const std::string& filePath);
+		static std::string GetWorkingDirectory();
 };
 
 #endif // !__UTILS_H__

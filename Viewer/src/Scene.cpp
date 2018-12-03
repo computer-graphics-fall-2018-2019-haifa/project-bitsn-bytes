@@ -59,6 +59,7 @@ void Scene::DeleteActiveModel()
 void Scene::AddCamera(Camera* camera)
 {
 	cameras.push_back(camera);
+	SetActiveCameraIndex(GetCameraCount() - 1);
 }
 
 const int Scene::GetCameraCount() const
@@ -104,8 +105,8 @@ void Scene::DeleteActiveCamera()
 
 const bool Scene::ShouldRenderCamera(int cameraIndex)
 {
-	if (activeCameraIndex != DISABLED) {
-		Camera* _activeCamera = cameras[activeCameraIndex];
+	if (cameraIndex != DISABLED) {
+		Camera* _activeCamera = cameras[cameraIndex];
 		return _activeCamera->GetCameraModel()->IsModelRenderingActive();
 	}
 }

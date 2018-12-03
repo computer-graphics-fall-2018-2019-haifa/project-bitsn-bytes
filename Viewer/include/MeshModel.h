@@ -7,7 +7,6 @@
 #include <string>
 #include <memory>
 #include "Face.h"
-//#include "Utils.h"
 #include "Constants.h"
 
 /*
@@ -38,7 +37,6 @@ class MeshModel
 		bool shouldRender;
 
 	public:
-		MeshModel() { ; }
 		MeshModel(const MeshModel& primitive);
 		MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
 		virtual ~MeshModel();
@@ -61,7 +59,7 @@ class MeshModel
 
 		void SetModelRenderingState(bool state) { shouldRender = state; }
 
-		bool IsModelRenderingActive() { return shouldRender; }
+		const bool IsModelRenderingActive() const { return shouldRender; }
 
 		glm::vec3 GetCentroid() { return centroid; }
 
@@ -77,17 +75,15 @@ class PrimMeshModel : public MeshModel
 		PrimMeshModel(const PRIMITIVE primitive);
 };
 
-class CameraModel
+class CameraModel : public PrimMeshModel
 {
 	private:
-		MeshModel model;
 		glm::vec4 coordinates;
 
 	public:
 		CameraModel(glm::vec4 coordinates);
 		const glm::vec4 GetCoordinates() const;
 		void SetCoordinates(const glm::vec4& coordinates_);
-		MeshModel& GetModel();
 };
 
 #endif // !__MESHMODEL_H__
