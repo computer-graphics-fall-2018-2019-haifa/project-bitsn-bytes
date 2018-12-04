@@ -26,7 +26,7 @@ private:
 	int cameraIndex;
 	float zoom;
 
-	void validateProjectionParameters(const PROJECTION_PARAMETERS& parameters);
+	void validateProjectionParameters(const PROJECTION_PARAMETERS parameters);
 
 public:
 	Camera();
@@ -41,11 +41,11 @@ public:
 
 	void SetProjection(const glm::mat4x4& projection);
 
-	void SetOrthographicProjection(const PROJECTION_PARAMETERS& parameters);
+	void SetOrthographicProjection(const PROJECTION_PARAMETERS parameters);
 
-	void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS& parameters);
+	void SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters);
 
-	void SetFrustumViewVolume(const PROJECTION_PARAMETERS& parameters);
+	void SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters);
 
 	void SetZoom(const float zoom);
 

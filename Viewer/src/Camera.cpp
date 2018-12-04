@@ -52,7 +52,7 @@ void Camera::SetProjection(const glm::mat4x4& projection)
 	projectionTransformation = projection;
 }
 
-void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS& parameters)
+void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS parameters)
 {
 	SET_PROJECTION_PARAMETERS(parameters);
 
@@ -67,7 +67,7 @@ void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS& parameters)
 		});
 }
 
-void Camera::SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS& parameters)
+void Camera::SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters)
 {
 	PROJECTION_PARAMETERS projectionParameters = { 0 };
 	float height = parameters.zNear * tan(TO_RADIAN(parameters.fovy) / 2.0f);
@@ -87,7 +87,7 @@ void Camera::SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS& parameters)
 	throw false;
 }
 
-void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS& parameters)
+void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters)
 {
 	validateProjectionParameters(parameters);
 
@@ -136,7 +136,7 @@ glm::mat4x4 Camera::GetProjection()
 	return projectionTransformation;
 }
 
-void Camera::validateProjectionParameters(const PROJECTION_PARAMETERS& parameters)
+void Camera::validateProjectionParameters(const PROJECTION_PARAMETERS parameters)
 {
 	SET_PROJECTION_PARAMETERS(parameters);
 
