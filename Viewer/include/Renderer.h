@@ -53,7 +53,7 @@ public:
 	Renderer(int viewportWidth, int viewportHeight, int viewportX = 0, int viewportY = 0);
 	~Renderer();
 
-	void Render(Scene& scene);
+	void Render(Scene* scene);
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);
 	void SetViewport(int viewportWidth, int viewportHeight, int viewportX = 0, int viewportY = 0);
@@ -68,11 +68,11 @@ public:
 	}
 	void SetWorldTransformation(const glm::mat4x4& transformation) { worldTranformation = transformation; }
 
-	void DrawAxis(Scene& scene);
+	void DrawAxis(Scene* scene);
 	void DrawLine(const glm::uvec2& p1, const glm::uvec2& p2, const glm::vec3& color);
-	void DrawTriangles(Scene& scene, const std::vector<glm::vec3>* vertices, bool shouldDrawFaceNormals = false, const glm::vec3* modelCentroid = NULL, UINT32 normScaleRate = 1, bool isCamera = false);
-	void DrawVerticesNormals(Scene& scene, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals);
-	void DrawBorderCube(Scene& scene, CUBE_LINES& cubeLines);
+	void DrawTriangles(Scene* scene, const std::vector<glm::vec3>* vertices, bool shouldDrawFaceNormals = false, const glm::vec3* modelCentroid = NULL, UINT32 normScaleRate = 1, bool isCamera = false);
+	void DrawVerticesNormals(Scene* scene, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals);
+	void DrawBorderCube(Scene* scene, CUBE_LINES& cubeLines);
 };
 
 #endif // !__RENDERER_H__

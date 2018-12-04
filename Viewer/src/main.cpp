@@ -22,7 +22,7 @@ static void GlfwErrorCallback(int error, const char* description);
 GLFWwindow* SetupGlfwWindow(int w, int h, const char* window_name);
 ImGuiIO& SetupDearImgui(GLFWwindow* window);
 void StartFrame();
-void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io);
+void RenderFrame(GLFWwindow* window, Scene* scene, Renderer& renderer, ImGuiIO& io);
 void Cleanup(GLFWwindow* window);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 
 	// Create the renderer and the scene
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
-	Scene scene = Scene();
+	Scene* scene = new Scene();
 
 	// Setup ImGui
 	ImGuiIO& io = SetupDearImgui(window);
@@ -126,7 +126,7 @@ void StartFrame()
 	ImGui::NewFrame();
 }
 
-void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
+void RenderFrame(GLFWwindow* window, Scene* scene, Renderer& renderer, ImGuiIO& io)
 {
 	// Render the menus
 	ImGui::Render();

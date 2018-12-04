@@ -41,7 +41,7 @@ class Scene {
 		const int GetModelCount() const;
 		void SetActiveModelIndex(int index);
 		const int GetActiveModelIndex() const;
-		const unsigned int AddPrimitiveModel(PRIMITIVE primitiveModel);
+		void AddPrimitiveModel(PRIMITIVE primitiveModel);
 		void NextModel();
 		void DeleteActiveModel();
 		glm::mat4x4 GetActiveModelTransformation();

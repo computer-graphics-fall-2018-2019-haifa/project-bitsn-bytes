@@ -26,7 +26,7 @@ const glm::vec4& GetClearColor()
 	return clearColor;
 }
 
-void DrawImguiMenus(ImGuiIO& io, Scene& scene)
+void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 {
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 	if (showDemoWindow)
@@ -43,11 +43,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::Button("Set world transformation"))
 		{
-			scene.SetWorldTransformation(HOMOGENEOUS_MATRIX4(world[0], world[1], world[2], 1.0f));
+			scene->SetWorldTransformation(HOMOGENEOUS_MATRIX4(world[0], world[1], world[2], 1.0f));
 		}
 
 		static glm::mat4x4 worldTransformation = glm::mat4x4(0);
-		worldTransformation = scene.GetWorldTransformation();
+		worldTransformation = scene->GetWorldTransformation();
 		std::string sWorldTransform = "";
 
 		for (int i = 0; i < 4; i++)
@@ -66,23 +66,21 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::Button("Add Cube model"))
 		{
-			int idx = scene.AddPrimitiveModel(CUBE);
-			scene.SetActiveModelIndex(idx);
+			scene->AddPrimitiveModel(CUBE);
 			modelControlWindow = true;
 		}
 
 		if (ImGui::Button("Add Sphere model"))
 		{
-			int idx = scene.AddPrimitiveModel(SPHERE);
-			scene.SetActiveModelIndex(idx);
+			scene->AddPrimitiveModel(SPHERE);
 			modelControlWindow = true;
 		}
 
 
 		ImGui::Text("------------------- Cameras: -------------------");
 
-		static float eye[3] = { 2,2,2 };
-		static float at[3] = { 0,0,0 };
+		static float eye[3] = { 2, 2, 2 };
+		static float at[3] = { 0, 0, 0 };
 		ImGui::SliderFloat3("Look from: (x,y,z)", eye, -10, 10);
 		ImGui::SliderFloat3("Look at: (x,y,z)", at, -10, 10);
 		ImGui::Text("Look from: (%d, %d, %d)", eye[0], eye[1], eye[2]);
@@ -90,34 +88,34 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::Button("Add new camera"))
 		{
-			Camera camera = Camera({ eye[0], eye[1], eye[2], 1.0f }, { at[0], at[1], at[2], 1.0f }, { 0, 1, 0, 1.0f });
-			scene.AddCamera(&camera);
+			Camera* camera = new Camera({ eye[0], eye[1], eye[2], 1.0f }, { at[0], at[1], at[2], 1.0f }, { 0, 1, 0, 1.0f });
+			scene->AddCamera(camera);
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::Button("Next camera"))
 		{
-			scene.NextCamera();
+			scene->NextCamera();
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::Button("Delete camera"))
 		{
-			scene.DeleteActiveCamera();
+			scene->DeleteActiveCamera();
 		}
 
 		static bool showCamera = false;
-		int cameraIndex = scene.GetActiveCameraIndex();
+		int cameraIndex = scene->GetActiveCameraIndex();
 		ImGui::Text("Active camera: %d", cameraIndex);
-		showCamera = scene.ShouldRenderCamera(cameraIndex);
+		showCamera = scene->ShouldRenderCamera(cameraIndex);
 		ImGui::SameLine();
 
 		if (ImGui::Checkbox("Show Camera", &showCamera))
 		{
-			if (scene.GetActiveCamera() != NULL) {
-				scene.GetActiveCamera()->SetModelRenderingState(showCamera);
+			if (scene->GetActiveCamera() != NULL) {
+				scene->GetActiveCamera()->SetModelRenderingState(showCamera);
 			}
 		}
 
@@ -139,28 +137,28 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("zNear", &projParams.zNear, -5.0, 5.0);
 		ImGui::SliderFloat("zFar", &projParams.zFar, -5.0, 5.0);
 
-		static bool bIsProjError = false;
-		static bool bIsPersError = false;
+		static bool ProjectionError = false;
+		static bool PerspectiveError = false;
 
 
 		try
 		{
 			if (ImGui::Button("Orthographic Projection"))
 			{
-				scene.SetOrthographicProjection(projParams);
+				scene->SetOrthographicProjection(projParams);
 			}
 		}
 		catch (bool thrownErrorState)
 		{
-			bIsProjError = thrownErrorState;
+			ProjectionError = thrownErrorState;
 		}
 
-		static bool bisFirst = true;
+		static bool isFirst = true;
 
-		if (bIsProjError)
+		if (ProjectionError)
 		{
 			ImGui::Text("Invalid input parameters, can't divide by zero - Try Again!");
-			bIsPersError = false;
+			PerspectiveError = false;
 		}
 
 
@@ -180,24 +178,24 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			if (ImGui::Button("Perspective Projection"))
 			{
-				scene.SetPerspectiveProjection(perspParam);
+				scene->SetPerspectiveProjection(perspParam);
 			}
 		}
 
 		catch (bool thrownErrorState)
 		{
-			bIsPersError = thrownErrorState;
+			PerspectiveError = thrownErrorState;
 		}
 
-		if (bIsPersError)
+		if (PerspectiveError)
 		{
 			ImGui::Text("Invalid input parameters, can't divide by zero - Try Again!");
-			bIsProjError = false;
+			ProjectionError = false;
 		}
 
 
 		static glm::mat4x4 activeCameraTransformation = glm::mat4x4(0);
-		activeCameraTransformation = scene.GetActiveCameraTransformation();
+		activeCameraTransformation = scene->GetActiveCameraTransformation();
 		std::string sCameraTransform = "";
 
 		for (int i = 0; i < 4; i++)
@@ -214,7 +212,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 		static glm::mat4x4 activeCameraProjection;
-		activeCameraProjection = scene.GetActiveCameraProjection();
+		activeCameraProjection = scene->GetActiveCameraProjection();
 		std::string sCameraProjection = "";
 
 		for (int i = 0; i < 4; i++)
@@ -239,24 +237,24 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::IsKeyPressed(GLFW_KEY_PAGE_UP) || ImGui::Button("   Zoom in   "))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
 		{
-			scene.ScaleActiveCamera(1.0f / camScaleFactor);
+			scene->ScaleActiveCamera(1.0f / camScaleFactor);
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::IsKeyPressed(GLFW_KEY_PAGE_DOWN) || ImGui::Button("   Zoom out   "))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
 		{
-			scene.ScaleActiveCamera(camScaleFactor);
+			scene->ScaleActiveCamera(camScaleFactor);
 		}
 
 		if (io.MouseWheel > 0)
 		{
-			scene.ScaleActiveCamera(1.0f / 2.0f);
+			scene->ScaleActiveCamera(1.0f / 2.0f);
 		}
 
 		if (io.MouseWheel < 0)
 		{
-			scene.ScaleActiveCamera(2.0f);
+			scene->ScaleActiveCamera(2.0f);
 		}
 
 		//Camera moves:
@@ -266,38 +264,38 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::IsKeyPressed(GLFW_KEY_LEFT) || ImGui::Button("  Left  "))
 		{
-			scene.TranslateActiveCameraXAxis(-camMoveFactor);
+			scene->TranslateActiveCameraXAxis(-camMoveFactor);
 		}
 		
 		ImGui::SameLine();
 		
 		if (ImGui::IsKeyPressed(GLFW_KEY_RIGHT) || ImGui::Button("  Right "))
 		{
-			scene.TranslateActiveCameraXAxis(camMoveFactor);
+			scene->TranslateActiveCameraXAxis(camMoveFactor);
 		}
 		
 		if (ImGui::IsKeyPressed(GLFW_KEY_UP) || ImGui::Button("   Up   "))
 		{
-			scene.TranslateActiveCameraYAxis(camMoveFactor);
+			scene->TranslateActiveCameraYAxis(camMoveFactor);
 		}
 		
 		ImGui::SameLine();
 
 		if (ImGui::IsKeyPressed(GLFW_KEY_DOWN) || ImGui::Button("  Down  "))
 		{
-			scene.TranslateActiveCameraYAxis(-camMoveFactor);
+			scene->TranslateActiveCameraYAxis(-camMoveFactor);
 		}
 
 		if (ImGui::IsKeyPressed('F') || ImGui::Button(" Forward"))
 		{
-			scene.TranslateActiveCameraZAxis(camMoveFactor);
+			scene->TranslateActiveCameraZAxis(camMoveFactor);
 		}
 
 		ImGui::SameLine();
 
 		if (ImGui::IsKeyPressed('B') || ImGui::Button("  Back  "))
 		{
-			scene.TranslateActiveCameraZAxis(-camMoveFactor);
+			scene->TranslateActiveCameraZAxis(-camMoveFactor);
 		}
 
 		//Camera rotation:
@@ -307,38 +305,38 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::IsKeyPressed('A') || ImGui::Button("+X Axis 'A'"))
 		{
-			scene.RotateActiveCameraXAxis(-cameraAngle);
+			scene->RotateActiveCameraXAxis(-cameraAngle);
 		}
 
 		ImGui::SameLine();
 		
 		if (ImGui::IsKeyPressed('D') || ImGui::Button("-X Axis 'D'"))
 		{
-			scene.RotateActiveCameraXAxis(cameraAngle);
+			scene->RotateActiveCameraXAxis(cameraAngle);
 		}
 
 		if (ImGui::IsKeyPressed('W') || ImGui::Button("+Y Axis 'W'"))
 		{
-			scene.RotateActiveCameraYAxis(-cameraAngle);
+			scene->RotateActiveCameraYAxis(-cameraAngle);
 		}
 
 		ImGui::SameLine();
 		
 		if (ImGui::IsKeyPressed('S') || ImGui::Button("-Y Axis 'S'"))
 		{
-			scene.RotateActiveCameraYAxis(cameraAngle);
+			scene->RotateActiveCameraYAxis(cameraAngle);
 		}
 		
 		if (ImGui::IsKeyPressed('Q') || ImGui::Button("+Z Axis 'Q'"))
 		{
-			scene.RotateActiveCameraZAxis(-cameraAngle);
+			scene->RotateActiveCameraZAxis(-cameraAngle);
 		}
 		
 		ImGui::SameLine();
 		
 		if (ImGui::IsKeyPressed('E') || ImGui::Button("-Z Axis 'E'"))
 		{
-			scene.RotateActiveCameraZAxis(cameraAngle);
+			scene->RotateActiveCameraZAxis(cameraAngle);
 		}
 
 		ImGui::End();
@@ -351,15 +349,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::Button("Next model"))
 		{
-			scene.NextModel();
+			scene->NextModel();
 		}
 		if (ImGui::Button("Delete model"))
 		{
-			scene.DeleteActiveModel();
+			scene->DeleteActiveModel();
 		}
-		ImGui::Text("Active model: %d", scene.GetActiveModelIndex());
+		ImGui::Text("Active model: %d", scene->GetActiveModelIndex());
 
-		static glm::mat4x4 activeModelWorldTransformation = scene.GetActiveModelTransformation();
+		static glm::mat4x4 activeModelWorldTransformation = scene->GetActiveModelTransformation();
 		std::string sModelTransform = "";
 		for (int i = 0; i < 4; i++)
 		{
@@ -379,21 +377,21 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::Button("Bigger"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
 		{
-			scene.ScaleActiveModel(modelScaleFactor);
+			scene->ScaleActiveModel(modelScaleFactor);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Smaller"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
 		{
-			scene.ScaleActiveModel(1.0f / modelScaleFactor);
+			scene->ScaleActiveModel(1.0f / modelScaleFactor);
 		}
 
 		static bool ShowVerticesNormals = false;
 		static bool ShowFacesNormals = false;
 		static bool ShowBorderCube = false;
 
-		scene.ShowVerticesNormals(ShowVerticesNormals);
-		scene.ShowFacesNormals(ShowFacesNormals);
-		scene.ShowBorderCube(ShowBorderCube);
+		scene->ShowVerticesNormals(ShowVerticesNormals);
+		scene->ShowFacesNormals(ShowFacesNormals);
+		scene->ShowBorderCube(ShowBorderCube);
 
 		ImGui::Checkbox("Show vertices normals", &ShowVerticesNormals);
 		ImGui::Checkbox("Show face normals", &ShowFacesNormals);
@@ -406,30 +404,30 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if (ImGui::Button("   Left  "))
 		{
-			scene.TranslateActiveModelXAxis(-modelMoveFactor);
+			scene->TranslateActiveModelXAxis(-modelMoveFactor);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("  Right  "))
 		{
-			scene.TranslateActiveModelXAxis(modelMoveFactor);
+			scene->TranslateActiveModelXAxis(modelMoveFactor);
 		}
 		if (ImGui::Button("    Up   "))
 		{
-			scene.TranslateActiveModelYAxis(modelMoveFactor);
+			scene->TranslateActiveModelYAxis(modelMoveFactor);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("   Down  "))
 		{
-			scene.TranslateActiveModelYAxis(-modelMoveFactor);
+			scene->TranslateActiveModelYAxis(-modelMoveFactor);
 		}
 		if (ImGui::Button(" Forward "))
 		{
-			scene.TranslateActiveModelZAxis(modelMoveFactor);
+			scene->TranslateActiveModelZAxis(modelMoveFactor);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("   Back  "))
 		{
-			scene.TranslateActiveModelZAxis(-modelMoveFactor);
+			scene->TranslateActiveModelZAxis(-modelMoveFactor);
 		}
 
 		//Model rotation:
@@ -439,30 +437,30 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		if ((io.MouseDown[0] && io.MouseDelta.y > 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" +X Axis "))
 		{
-			scene.RotateActiveModelXAxis(modelAngle);
+			scene->RotateActiveModelXAxis(modelAngle);
 		}
 		ImGui::SameLine();
 		if ((io.MouseDown[0] && io.MouseDelta.y < 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" -X Axis "))
 		{
-			scene.RotateActiveModelXAxis(-modelAngle);
+			scene->RotateActiveModelXAxis(-modelAngle);
 		}
 		if ((io.MouseDown[0] && io.MouseDelta.x > 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" +Y Axis "))
 		{
-			scene.RotateActiveModelYAxis(modelAngle);
+			scene->RotateActiveModelYAxis(modelAngle);
 		}
 		ImGui::SameLine();
 		if ((io.MouseDown[0] && io.MouseDelta.x < 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" -Y Axis "))
 		{
-			scene.RotateActiveModelYAxis(-modelAngle);
+			scene->RotateActiveModelYAxis(-modelAngle);
 		}
 		if ((io.MouseDown[1] && io.MouseDelta.x > 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" +Z Axis "))
 		{
-			scene.RotateActiveModelZAxis(modelAngle);
+			scene->RotateActiveModelZAxis(modelAngle);
 		}
 		ImGui::SameLine();
 		if ((io.MouseDown[1] && io.MouseDelta.x < 0 && !ImGui::IsMouseHoveringAnyWindow()) || ImGui::Button(" -Z Axis "))
 		{
-			scene.RotateActiveModelZAxis(-modelAngle);
+			scene->RotateActiveModelZAxis(-modelAngle);
 		}
 	}
 
@@ -478,7 +476,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 					nfdchar_t *outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("obj;png,jpg", NULL, &outPath);
 					if (result == NFD_OKAY) {
-						scene.AddModel(std::make_shared<MeshModel>(Utils::LoadMeshModel(outPath)));
+						scene->AddModel(std::make_shared<MeshModel>(Utils::LoadMeshModel(outPath)));
+						modelControlWindow = true;
 						free(outPath);
 					}
 					else if (result == NFD_CANCEL) {

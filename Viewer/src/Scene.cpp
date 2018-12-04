@@ -13,6 +13,7 @@ Scene::Scene() : activeCameraIndex(DISABLED), activeModelIndex(DISABLED), worldT
 void Scene::AddModel(const std::shared_ptr<MeshModel>& model)
 {
 	models.push_back(model);
+	SetActiveModelIndex(models.size() - 1);
 }
 
 const int Scene::GetModelCount() const
@@ -33,11 +34,11 @@ const int Scene::GetActiveModelIndex() const
 	return activeModelIndex;
 }
 
-const unsigned int Scene::AddPrimitiveModel(PRIMITIVE primitiveModel)
+void Scene::AddPrimitiveModel(PRIMITIVE primitiveModel)
 {
-	std::shared_ptr<MeshModel> newModel = std::make_shared<MeshModel>(PrimMeshModel(primitiveModel));
-	models.push_back(newModel);
-	return models.size() - 1;
+	std::shared_ptr<MeshModel> model = std::make_shared<MeshModel>(PrimMeshModel(primitiveModel));
+	models.push_back(model);
+	SetActiveModelIndex(models.size() - 1);
 }
 
 void Scene::NextModel()
@@ -58,8 +59,10 @@ void Scene::DeleteActiveModel()
 // Camera related functions implementation
 void Scene::AddCamera(Camera* camera)
 {
+	printf("Adding Camera");
 	cameras.push_back(camera);
-	SetActiveCameraIndex(GetCameraCount() - 1);
+	camera->SetCameraIndex(GetCameraCount() - 1);
+	SetActiveCameraIndex(cameras.size() - 1);
 }
 
 const int Scene::GetCameraCount() const
@@ -81,8 +84,9 @@ const int Scene::GetActiveCameraIndex() const
 
 Camera* Scene::GetActiveCamera()
 {
+	printf("Trying to get active camera %d", activeCameraIndex);
 	if (activeCameraIndex != DISABLED) {
-		return cameras[activeCameraIndex];
+		return cameras.at(activeCameraIndex);
 	}
 
 	return NULL;
@@ -106,8 +110,8 @@ void Scene::DeleteActiveCamera()
 const bool Scene::ShouldRenderCamera(int cameraIndex)
 {
 	if (cameraIndex != DISABLED) {
-		Camera* _activeCamera = cameras[cameraIndex];
-		return _activeCamera->GetCameraModel()->IsModelRenderingActive();
+		Camera* _activeCamera = GetActiveCamera();
+		return _activeCamera->IsModelRenderingActive();
 	}
 }
 
@@ -142,7 +146,7 @@ const glm::mat4x4 Scene::GetActiveCameraTransformation()
 		return activeCamera->GetTransformation();
 	}
 	else {
-		return ZERO_MATRIX;
+		return I_MATRIX;
 	}
 }
 
@@ -153,7 +157,7 @@ const glm::mat4x4 Scene::GetActiveCameraProjection()
 		return activeCamera->GetProjection();
 	}
 	else {
-		return ZERO_MATRIX;
+		return I_MATRIX;
 	}
 }
 

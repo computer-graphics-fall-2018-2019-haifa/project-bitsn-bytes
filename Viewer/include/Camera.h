@@ -53,6 +53,8 @@ public:
 
 	void SetModelRenderingState(bool state);
 
+	void SetCameraIndex(int index) { cameraIndex = index; }
+
 	const bool IsModelRenderingActive() { return cameraModel->IsModelRenderingActive(); }
 
 	MeshModel* GetCameraModel();

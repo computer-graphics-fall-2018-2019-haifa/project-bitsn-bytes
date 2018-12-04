@@ -66,18 +66,18 @@ void Renderer::SetViewport(int viewportWidth, int viewportHeight, int viewportX,
 	createOpenGLBuffer();
 }
 
-void Renderer::Render(Scene& scene)
+void Renderer::Render(Scene* scene)
 {
-	if (scene.GetActiveCameraIndex() != DISABLED) {
-		Camera* activeCamera = scene.GetActiveCamera();
+	if (scene->GetActiveCameraIndex() != DISABLED) {
+		Camera* activeCamera = scene->GetActiveCamera();
 		SetCameraTransformation(inverse(activeCamera->GetTransformation()));
 		SetProjection(activeCamera->GetProjection());
 	}
 
 	DrawAxis(scene);
 
-	std::vector<std::shared_ptr<MeshModel>> models = scene.GetModels();
-	std::vector<Camera*> cameras = scene.GetCameras();
+	std::vector<std::shared_ptr<MeshModel>> models = scene->GetModels();
+	std::vector<Camera*> cameras = scene->GetCameras();
 
 	for each (auto model in models)
 	{
@@ -85,16 +85,16 @@ void Renderer::Render(Scene& scene)
 
 		modelVertices = model->Render();
 		SetObjectMatrices(model->GetModelTransformation(), model->GetNormalTransformation());
-		SetWorldTransformation(scene.GetWorldTransformation());
+		SetWorldTransformation(scene->GetWorldTransformation());
 
-		DrawTriangles(scene, &modelVertices->first, scene.ShouldShowFacesNormals(), &model->GetCentroid(), 1);
+		DrawTriangles(scene, &modelVertices->first, scene->ShouldShowFacesNormals(), &model->GetCentroid(), 1);
 
 
-		if (scene.ShouldShowVerticesNormals() && !modelVertices->second.second.empty()) {
+		if (scene->ShouldShowVerticesNormals() && !modelVertices->second.second.empty()) {
 			DrawVerticesNormals(scene, modelVertices->second.first, modelVertices->second.second);
 		}
 
-		if (scene.ShouldShowBorderCube()) {
+		if (scene->ShouldShowBorderCube()) {
 			DrawBorderCube(scene, model->GetBorderCube());
 		}
 
@@ -103,12 +103,12 @@ void Renderer::Render(Scene& scene)
 
 	for each(auto camera in cameras)
 	{
-		if (camera->IsModelRenderingActive() && camera != scene.GetActiveCamera()) {
-			Camera* activeCamera = scene.GetActiveCamera();
+		Camera* activeCamera = scene->GetActiveCamera();
+		if (camera->IsModelRenderingActive() && camera != activeCamera) {
 			SetCameraTransformation(inverse(activeCamera->GetTransformation()));
 			SetProjection(activeCamera->GetProjection());
 
-			SetWorldTransformation(scene.GetWorldTransformation());
+			SetWorldTransformation(scene->GetWorldTransformation());
 
 			glm::mat4x4 cameraTransformation = glm::mat4x4(SCALING_MATRIX4(1.f / 4.f)) * camera->GetTransformation();
 
@@ -125,17 +125,21 @@ void Renderer::Render(Scene& scene)
 	SwapBuffers();
 }
 
-void Renderer::DrawAxis(Scene& scene)
+void Renderer::DrawAxis(Scene* scene)
 {
 	glm::vec3 axisX		= { 1, 0, 0 };
 	glm::vec3 axisY		= { 0, 1, 0 };
 	glm::vec3 axisZ		= { 0, 0, 1 };
 	glm::vec3 zeroPoint = { 0, 0, 0 };
 
-	axisX = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(axisX));
-	axisY = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(axisY));
-	axisZ = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(axisZ));
-	zeroPoint = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * Utils::ToHomogeneousForm(zeroPoint));
+	glm::mat4x4 cameraProjection = scene->GetActiveCameraProjection();
+	glm::mat4x4 cameraTransformation = scene->GetActiveCameraTransformation();
+	glm::mat4x4 worldTransformation = scene->GetWorldTransformation();
+
+	axisX = Utils::ToCartesianForm(cameraProjection * cameraTransformation * worldTransformation * Utils::ToHomogeneousForm(axisX));
+	axisY = Utils::ToCartesianForm(cameraProjection * cameraTransformation * worldTransformation * Utils::ToHomogeneousForm(axisY));
+	axisZ = Utils::ToCartesianForm(cameraProjection * cameraTransformation * worldTransformation * Utils::ToHomogeneousForm(axisZ));
+	zeroPoint = Utils::ToCartesianForm(cameraProjection * cameraTransformation * worldTransformation * Utils::ToHomogeneousForm(zeroPoint));
 
 	DrawLine(ToViewPlane(zeroPoint), ToViewPlane(axisX * 5.f), COLOR(X_COL));
 	DrawLine(ToViewPlane(zeroPoint), ToViewPlane(axisY * 5.f), COLOR(Y_COL));
@@ -151,7 +155,7 @@ void Renderer::DrawLine(const glm::uvec2& p1, const glm::uvec2& p2, const glm::v
 	float y1 = p1.y;
 	float y2 = p2.y;
 
-	const bool bStep = IsSlopeBiggerThanOne(x1, x2, y1, y2);
+	const bool step = IsSlopeBiggerThanOne(x1, x2, y1, y2);
 
 	OrderPoints(x1, x2, y1, y2);
 
@@ -165,7 +169,7 @@ void Renderer::DrawLine(const glm::uvec2& p1, const glm::uvec2& p2, const glm::v
 
 	for (int x = (int)x1; x < maxX; x++)
 	{
-		PutPixel(x, y, bStep, color);
+		PutPixel(x, y, step, color);
 
 		yStepErrorUpdate(dx, dy, error, y, ystep);
 	}
@@ -205,7 +209,7 @@ void Renderer::PutPixel(int x, int y, bool step, const glm::vec3& color)
 	}
 }
 
-void Renderer::DrawTriangles(Scene& scene, const std::vector<glm::vec3>* vertices, bool shouldDrawFaceNormals /*= false*/, const glm::vec3* modelCentroid /*= NULL*/, UINT32 normScaleRate /*= 1*/, bool isCamera /*= false*/)
+void Renderer::DrawTriangles(Scene* scene, const std::vector<glm::vec3>* vertices, bool shouldDrawFaceNormals /*= false*/, const glm::vec3* modelCentroid /*= NULL*/, UINT32 normScaleRate /*= 1*/, bool isCamera /*= false*/)
 {
 	std::vector<glm::vec3>::const_iterator it = vertices->begin();
 
@@ -221,15 +225,15 @@ void Renderer::DrawTriangles(Scene& scene, const std::vector<glm::vec3>* vertice
 		glm::vec3 nrm2 = p2;
 		glm::vec3 nrm3 = p3;
 
-		p1 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p1));
-		p2 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p2));
-		p3 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p3));
+		p1 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p1));
+		p2 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p2));
+		p3 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(p3));
 
 		DrawLine(ToViewPlane(p1), ToViewPlane(p2), COLOR(WHITE));
 		DrawLine(ToViewPlane(p2), ToViewPlane(p3), COLOR(WHITE));
 		DrawLine(ToViewPlane(p3), ToViewPlane(p1), COLOR(WHITE));
 
-		if (scene.ShouldShowFacesNormals())
+		if (scene->ShouldShowFacesNormals())
 		{
 			glm::vec3 subs1 = nrm3 - nrm1;
 			glm::vec3 subs2 = nrm2 - nrm1;
@@ -240,34 +244,34 @@ void Renderer::DrawTriangles(Scene& scene, const std::vector<glm::vec3>* vertice
 			glm::vec3 normalizedFaceNormal = Utils::IsVecEqual(faceNormal, glm::vec3(0, 0, 0)) ? faceNormal : glm::normalize(faceNormal);
 
 			normalizedFaceNormal /= 2.5f;
-			glm::vec3 nP1 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(faceCenter));
-			glm::vec3 nP2 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(faceCenter + normalizedFaceNormal));
+			glm::vec3 nP1 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(faceCenter));
+			glm::vec3 nP2 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(faceCenter + normalizedFaceNormal));
 
 			DrawLine(ToViewPlane(nP1), ToViewPlane(nP2), COLOR(LIME));
 		}
 	}
 }
 
-void Renderer::DrawVerticesNormals(Scene& scene, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals)
+void Renderer::DrawVerticesNormals(Scene* scene, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals)
 {
 	for (int i = 0; i < normals.size() && i < vertices.size(); i++)
 	{
 		glm::vec3 vertex = vertices[i];
 		glm::vec3 vertexNormal = normals[i];
 
-		glm::vec3 nP1 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(vertex));
-		glm::vec3 nP2 = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(vertex + vertexNormal / 2.5f));
+		glm::vec3 nP1 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(vertex));
+		glm::vec3 nP2 = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(vertex + vertexNormal / 2.5f));
 
 		DrawLine(ToViewPlane(nP1), ToViewPlane(nP2), COLOR(RED));
 	}
 }
 
-void Renderer::DrawBorderCube(Scene& scene, CUBE_LINES& borderCube)
+void Renderer::DrawBorderCube(Scene* scene, CUBE_LINES& borderCube)
 {
 	for each (std::pair<glm::vec3, glm::vec3> line in borderCube.line)
 	{
-		glm::vec3 pStart = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(line.first));
-		glm::vec3 pEnd = Utils::ToCartesianForm(scene.GetActiveCameraProjection() * scene.GetActiveCameraTransformation() * scene.GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(line.second));
+		glm::vec3 pStart = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(line.first));
+		glm::vec3 pEnd = Utils::ToCartesianForm(scene->GetActiveCameraProjection() * scene->GetActiveCameraTransformation() * scene->GetWorldTransformation() * objectTranformation * Utils::ToHomogeneousForm(line.second));
 
 		DrawLine(ToViewPlane(pStart), ToViewPlane(pEnd), COLOR(BLUE));
 	}
