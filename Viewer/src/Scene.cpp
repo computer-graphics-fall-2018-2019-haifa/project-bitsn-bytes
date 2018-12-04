@@ -108,40 +108,35 @@ void Scene::DeleteActiveCamera()
 const bool Scene::ShouldRenderCamera(int cameraIndex)
 {
 	if (cameraIndex != DISABLED) {
-		Camera* _activeCamera = GetActiveCamera();
-		return _activeCamera->IsModelRenderingActive();
+		return GetActiveCamera()->IsModelRenderingActive();
 	}
 }
 
 void Scene::SetOrthographicProjection(const PROJECTION_PARAMETERS parameters)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		activeCamera->SetOrthographicProjection(parameters);
+		GetActiveCamera()->SetOrthographicProjection(parameters);
 	}
 }
 
 void Scene::SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
-		activeCamera->SetPerspectiveProjection(parameters);
+		GetActiveCamera()->SetPerspectiveProjection(parameters);
 	}
 }
 
 void Scene::SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
-		activeCamera->SetFrustumViewVolume(parameters);
+		GetActiveCamera()->SetFrustumViewVolume(parameters);
 	}
 }
 
 const glm::mat4x4 Scene::GetActiveCameraTransformation()
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
-		return activeCamera->GetTransformation();
+		return GetActiveCamera()->GetTransformation();
 	}
 	else {
 		return I_MATRIX;
@@ -151,8 +146,7 @@ const glm::mat4x4 Scene::GetActiveCameraTransformation()
 const glm::mat4x4 Scene::GetActiveCameraProjection()
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
-		return activeCamera->GetProjection();
+		return GetActiveCamera()->GetProjection();
 	}
 	else {
 		return I_MATRIX;
@@ -162,7 +156,7 @@ const glm::mat4x4 Scene::GetActiveCameraProjection()
 void Scene::ScaleActiveCamera(const float scaleFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 scaleTransformation(SCALING_MATRIX4(scaleFactor));
 		activeCamera->SetTransformation(scaleTransformation * currentTransformation);
@@ -172,7 +166,7 @@ void Scene::ScaleActiveCamera(const float scaleFactor)
 void Scene::TranslateActiveCameraXAxis(const float translationFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(translationFactor, 0, 0));
 		activeCamera->SetTransformation(translateTransformation * currentTransformation);
@@ -182,7 +176,7 @@ void Scene::TranslateActiveCameraXAxis(const float translationFactor)
 void Scene::TranslateActiveCameraYAxis(const float translationFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(0, translationFactor, 0));
 		activeCamera->SetTransformation(translateTransformation * currentTransformation);
@@ -192,7 +186,7 @@ void Scene::TranslateActiveCameraYAxis(const float translationFactor)
 void Scene::TranslateActiveCameraZAxis(const float translationFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(0, 0, translationFactor));
 		activeCamera->SetTransformation(translateTransformation * currentTransformation);
@@ -202,7 +196,7 @@ void Scene::TranslateActiveCameraZAxis(const float translationFactor)
 void Scene::RotateActiveCameraXAxis(const float rotationFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
 		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
@@ -214,7 +208,7 @@ void Scene::RotateActiveCameraXAxis(const float rotationFactor)
 void Scene::RotateActiveCameraYAxis(const float rotationFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
 		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
@@ -226,7 +220,7 @@ void Scene::RotateActiveCameraYAxis(const float rotationFactor)
 void Scene::RotateActiveCameraZAxis(const float rotationFactor)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
 		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
 		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
