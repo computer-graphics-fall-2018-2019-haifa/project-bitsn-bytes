@@ -59,7 +59,6 @@ void Scene::DeleteActiveModel()
 // Camera related functions implementation
 void Scene::AddCamera(Camera* camera)
 {
-	printf("Adding Camera");
 	cameras.push_back(camera);
 	camera->SetCameraIndex(GetCameraCount() - 1);
 	SetActiveCameraIndex(cameras.size() - 1);
@@ -84,7 +83,6 @@ const int Scene::GetActiveCameraIndex() const
 
 Camera* Scene::GetActiveCamera()
 {
-	printf("Trying to get active camera %d", activeCameraIndex);
 	if (activeCameraIndex != DISABLED) {
 		return cameras.at(activeCameraIndex);
 	}
@@ -118,7 +116,7 @@ const bool Scene::ShouldRenderCamera(int cameraIndex)
 void Scene::SetOrthographicProjection(const PROJECTION_PARAMETERS parameters)
 {
 	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = cameras[activeCameraIndex];
+		Camera* activeCamera = GetActiveCamera();
 		activeCamera->SetOrthographicProjection(parameters);
 	}
 }

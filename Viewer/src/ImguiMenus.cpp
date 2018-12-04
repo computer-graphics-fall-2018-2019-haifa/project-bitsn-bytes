@@ -83,8 +83,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		static float at[3] = { 0, 0, 0 };
 		ImGui::SliderFloat3("Look from: (x,y,z)", eye, -10, 10);
 		ImGui::SliderFloat3("Look at: (x,y,z)", at, -10, 10);
-		ImGui::Text("Look from: (%d, %d, %d)", eye[0], eye[1], eye[2]);
-		ImGui::Text("Look at: (%d, %d, %d)", at[0], at[1], at[2]);
+		ImGui::Text("Look from: (%.3f, %.3f, %.3f)", eye[0], eye[1], eye[2]);
+		ImGui::Text("Look at: (%.3f, %.3f, %.3f)", at[0], at[1], at[2]);
 
 		if (ImGui::Button("Add new camera"))
 		{

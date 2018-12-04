@@ -11,7 +11,8 @@ Camera::Camera() : viewTransformation(I_MATRIX), projectionTransformation(I_MATR
 }
 
 Camera::Camera(const glm::vec4& eye, const glm::vec4& at, const glm::vec4& up) :
-	zoom(1.0)
+	zoom(1.0),
+	projectionTransformation(I_MATRIX)
 {
 	SetCameraLookAt(eye, at, up);
 	cameraModel = new CameraModel(eye);
