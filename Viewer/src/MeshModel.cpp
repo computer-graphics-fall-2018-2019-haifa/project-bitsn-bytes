@@ -33,32 +33,31 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	transformation(I_MATRIX),
 	worldTransformation(I_MATRIX),
 	normalTransformation(I_MATRIX),
-	centroid({ 0, 0, 0 })
+	centroid({ 0, 0, 0 }),
+	minCoordinates({ std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() }),
+	maxCoordinates({ -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() })
 {
-
-	glm::vec3 tmpMinCoordinates({ std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() });
-	glm::vec3 tmpMaxCoordinates({ -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max() });
 
 	for (auto vertex : vertices) {
 		// Find minimum coordinate values through all vertices
-		tmpMinCoordinates.x = MIN(tmpMinCoordinates.x, vertex.x);
-		tmpMinCoordinates.y = MIN(tmpMinCoordinates.y, vertex.y);
-		tmpMinCoordinates.z = MIN(tmpMinCoordinates.z, vertex.z);
+		minCoordinates.x = MIN(minCoordinates.x, vertex.x);
+		minCoordinates.y = MIN(minCoordinates.y, vertex.y);
+		minCoordinates.z = MIN(minCoordinates.z, vertex.z);
 		// Find maximum coordinate values through all vertices
-		tmpMaxCoordinates.x = MAX(tmpMaxCoordinates.x, vertex.x);
-		tmpMaxCoordinates.y = MAX(tmpMaxCoordinates.y, vertex.y);
-		tmpMaxCoordinates.z = MAX(tmpMaxCoordinates.z, vertex.z);
+		maxCoordinates.x = MAX(maxCoordinates.x, vertex.x);
+		maxCoordinates.y = MAX(maxCoordinates.y, vertex.y);
+		maxCoordinates.z = MAX(maxCoordinates.z, vertex.z);
 		// Calculate model centroid
 		centroid += vertex;
 	}
 
 	centroid /= (float) vertices.size();
-	tmpMinCoordinates -= centroid;
-	tmpMaxCoordinates -= centroid;
+	minCoordinates -= centroid;
+	maxCoordinates -= centroid;
 
 	// Find absolute minimum and maximum
-	float absoluteMin = MIN(tmpMinCoordinates.x, MIN(tmpMinCoordinates.y, tmpMinCoordinates.z));
-	float absoluteMax = MAX(tmpMaxCoordinates.x, MAX(tmpMaxCoordinates.y, tmpMaxCoordinates.z));
+	float absoluteMin = fmin(fmin(minCoordinates.x, minCoordinates.y), minCoordinates.z);
+	float absoluteMax = fmax(fmax(maxCoordinates.x, maxCoordinates.y), maxCoordinates.z);
 
 	glm::vec3 normalizedVector;
 	unsigned int vertexPositionsCount = faces.size() * FACE_ELEMENTS;
@@ -89,18 +88,19 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	for (unsigned int i = 0; i < vertexNormalsCount; i++) {
 		vertexNormals[i] = normals[i];
 	}
+
 	// Calculate normalized centroid coordinates
 	centroid.x = NORMALIZE_COORDS(0, absoluteMin, absoluteMax);
 	centroid.y = NORMALIZE_COORDS(0, absoluteMin, absoluteMax);
 	centroid.z = NORMALIZE_COORDS(0, absoluteMin, absoluteMax);
 	// Calculate normalized minimum coordinates
-	minCoordinates.x = NORMALIZE_COORDS(tmpMinCoordinates.x, absoluteMin, absoluteMax);
-	minCoordinates.y = NORMALIZE_COORDS(tmpMinCoordinates.y, absoluteMin, absoluteMax);
-	minCoordinates.z = NORMALIZE_COORDS(tmpMinCoordinates.z, absoluteMin, absoluteMax);
+	minCoordinates.x = NORMALIZE_COORDS(minCoordinates.x, absoluteMin, absoluteMax);
+	minCoordinates.y = NORMALIZE_COORDS(minCoordinates.y, absoluteMin, absoluteMax);
+	minCoordinates.z = NORMALIZE_COORDS(minCoordinates.z, absoluteMin, absoluteMax);
 	// Calculate normalized maximum coordiantes
-	maxCoordinates.x = NORMALIZE_COORDS(tmpMaxCoordinates.x, absoluteMin, absoluteMax);
-	maxCoordinates.y = NORMALIZE_COORDS(tmpMaxCoordinates.y, absoluteMin, absoluteMax);
-	maxCoordinates.z = NORMALIZE_COORDS(tmpMaxCoordinates.z, absoluteMin, absoluteMax);
+	maxCoordinates.x = NORMALIZE_COORDS(maxCoordinates.x, absoluteMin, absoluteMax);
+	maxCoordinates.y = NORMALIZE_COORDS(maxCoordinates.y, absoluteMin, absoluteMax);
+	maxCoordinates.z = NORMALIZE_COORDS(maxCoordinates.z, absoluteMin, absoluteMax);
 
 	SetModelRenderingState(true);
 	buildBorderCube(cubeLines);
@@ -139,6 +139,23 @@ std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<
 	verticesData->second.second = modelVerticesNormals;
 
 	return verticesData;
+}
+
+std::vector<std::vector<glm::vec3>> MeshModel::GetModelTriangles()
+{
+	std::vector<std::vector<glm::vec3>> triangles;
+
+	for (int i = 0; i < faces.size(); i++) {
+		Face face = faces[i];
+		glm::vec3 point_1 = vertices[face.GetVertexIndex(0) - 1];
+		glm::vec3 point_2 = vertices[face.GetVertexIndex(1) - 1];
+		glm::vec3 point_3 = vertices[face.GetVertexIndex(2) - 1];
+
+		std::vector<glm::vec3> triangle = { point_1, point_2, point_3 };
+		triangles.push_back(triangle);
+	}
+
+	return triangles;
 }
 
 void MeshModel::buildBorderCube(CUBE_LINES& cubeLines)

@@ -14,7 +14,12 @@
 
 Renderer::Renderer(int viewportWidth, int viewportHeight, int viewportX, int viewportY) :
 	colorBuffer(nullptr),
-	zBuffer(nullptr)
+	zBuffer(nullptr),
+	normalTransformation(I_MATRIX),
+	cameraTransformation(I_MATRIX),
+	objectTranformation(I_MATRIX),
+	projection(I_MATRIX),
+	worldTranformation(I_MATRIX)
 {
 	initOpenGLRendering();
 	SetViewport(viewportWidth, viewportHeight, viewportX, viewportY);
@@ -88,7 +93,6 @@ void Renderer::Render(Scene* scene)
 		SetWorldTransformation(scene->GetWorldTransformation());
 
 		DrawTriangles(scene, &modelVertices->first, scene->ShouldShowFacesNormals(), &model->GetCentroid(), 1);
-
 
 		if (scene->ShouldShowVerticesNormals() && !modelVertices->second.second.empty()) {
 			DrawVerticesNormals(scene, modelVertices->second.first, modelVertices->second.second);
@@ -293,6 +297,7 @@ void Renderer::OrderPoints(float& x1, float& x2, float& y1, float& y2)
 void Renderer::GetDeltas(IN float x1, IN float x2, IN float y1, IN float y2, OUT float* pDx, OUT float* pDy)
 {
 	*pDx = x2 - x1;
+	*pDy = fabs(y2 - y1);
 }
 
 void Renderer::yStepErrorUpdate(float dx, float dy, float& error, int& y, const int& ystep)

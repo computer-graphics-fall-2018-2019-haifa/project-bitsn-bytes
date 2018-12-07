@@ -42,6 +42,9 @@ class MeshModel
 		virtual ~MeshModel();
 
 		std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* Render();
+
+		std::vector<std::vector<glm::vec3>> GetModelTriangles();
+
 		void buildBorderCube(CUBE_LINES& cubeLines);
 
 		void SetModelTransformation(const glm::mat4x4& tranformation_);

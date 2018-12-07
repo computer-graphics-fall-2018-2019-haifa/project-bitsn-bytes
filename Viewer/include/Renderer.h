@@ -70,7 +70,7 @@ public:
 
 	void DrawAxis(Scene* scene);
 	void DrawLine(const glm::uvec2& p1, const glm::uvec2& p2, const glm::vec3& color);
-	void DrawTriangles(Scene* scene, const std::vector<glm::vec3>* vertices, bool shouldDrawFaceNormals = false, const glm::vec3* modelCentroid = NULL, UINT32 normScaleRate = 1, bool isCamera = false);
+	void DrawTriangles(Scene* scene, const std::vector<glm::vec3>* triangles, bool shouldDrawFaceNormals = false, const glm::vec3* modelCentroid = NULL, UINT32 normScaleRate = 1, bool isCamera = false);
 	void DrawVerticesNormals(Scene* scene, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals);
 	void DrawBorderCube(Scene* scene, CUBE_LINES& cubeLines);
 };
