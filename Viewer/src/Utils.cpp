@@ -71,6 +71,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath)
 		else if (lineType == "vt")
 		{
 			// Texture coordinates
+			// I did not see that any of the files we have contains "vt" line, so did not implement the logic..
 		}
 		else if (lineType == "f")
 		{
