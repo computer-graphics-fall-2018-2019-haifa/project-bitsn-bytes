@@ -36,7 +36,10 @@ class MeshModel
 		glm::vec3 centroid;
 		glm::vec3 minCoordinates;
 		glm::vec3 maxCoordinates;
-		CUBE_LINES cubeLines;
+		CUBE_LINES cubeLines; 
+		GLuint texWidth;
+		GLuint texHeight;
+		unsigned char* texData;
 		// Helper properties
 		bool shouldRender;
 
