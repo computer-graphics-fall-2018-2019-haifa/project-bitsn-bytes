@@ -8,29 +8,30 @@
 #include <string>
 #include <glm/glm.hpp>
 
-#include "Utils.h";
+#include "Constants.h"
+#include "Utils.h"
 
 class Surface
 {
 public:
-	std::string m_material;
-	glm::vec4 m_ambientColor;
-	glm::vec4 m_diffuseColor;
-	glm::vec4 m_specularColor;
+	std::string material;
+	glm::vec4 ambientColor;
+	glm::vec4 diffuseColor;
+	glm::vec4 specularColor;
 
-	float m_ambientReflectionRate;
-	float m_diffuseReflectionRate;
-	float m_specularReflectionRate;
-	int m_shininess;
+	float ambientReflectionRate;
+	float diffuseReflectionRate;
+	float specularReflectionRate;
+	int shininess;
 
-	Surface() : m_material("Empty"),
-		m_ambientReflectionRate(1.f),
-		m_ambientColor(Utils::GetColor(COLOR::BLACK)),
-		m_diffuseReflectionRate(1.f),
-		m_diffuseColor(Utils::GetColor(COLOR::BLACK)),
-		m_specularReflectionRate(0.2f),
-		m_specularColor(Utils::GetColor(COLOR::BLACK)),
-		m_shininess(1)
+	Surface() : material("Empty"),
+		ambientReflectionRate(1.f),
+		ambientColor(Utils::GetColor(COLOR::BLACK)),
+		diffuseReflectionRate(1.f),
+		diffuseColor(Utils::GetColor(COLOR::BLACK)),
+		specularReflectionRate(0.2f),
+		specularColor(Utils::GetColor(COLOR::BLACK)),
+		shininess(1)
 	{}
 
 	Surface(const std::string& material,
@@ -38,19 +39,19 @@ public:
 		const glm::vec4& diffusiveC, float diffusiveI,
 		const glm::vec4& specularC, float specularI,
 		int shininess) :
-		m_material(material),
-		m_ambientColor(ambientC), m_ambientReflectionRate(ambientI),
-		m_diffuseColor(diffusiveC), m_diffuseReflectionRate(diffusiveI),
-		m_specularColor(specularC), m_specularReflectionRate(specularI),
-		m_shininess(shininess)
+		material(material),
+		ambientColor(ambientC), ambientReflectionRate(ambientI),
+		diffuseColor(diffusiveC), diffuseReflectionRate(diffusiveI),
+		specularColor(specularC), specularReflectionRate(specularI),
+		shininess(shininess)
 	{}
 
 	Surface(const Surface& surf) :
-		Surface(surf.m_material,
-			surf.m_ambientColor, surf.m_ambientReflectionRate,
-			surf.m_diffuseColor, surf.m_diffuseReflectionRate,
-			surf.m_specularColor, surf.m_specularReflectionRate,
-			surf.m_shininess)
+		Surface(surf.material,
+			surf.ambientColor, surf.ambientReflectionRate,
+			surf.diffuseColor, surf.diffuseReflectionRate,
+			surf.specularColor, surf.specularReflectionRate,
+			surf.shininess)
 	{}
 
 	~Surface() = default;
@@ -70,6 +71,13 @@ public:
 	const int Face::GetVertexIndex(int index);
 	const int Face::GetNormalIndex(int index);
 	const int Face::GetTextureIndex(int index);
+
+	glm::vec4 actualColorP1;
+	glm::vec4 actualColorP2;
+	glm::vec4 actualColorP3;
+	Surface* surface;
+	std::vector <std::pair<std::pair<float, glm::vec4>, std::pair<glm::vec3, glm::mat4x4>>> diffusiveColorAndSource;
+	std::vector <std::pair<std::pair<float, glm::vec4>, std::pair<glm::vec3, glm::mat4x4>>> speculativeColorAndSource;
 };
 
 #endif // !__FACE_H__

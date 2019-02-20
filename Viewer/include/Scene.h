@@ -23,15 +23,27 @@ class Scene {
 	private:
 		std::vector<std::shared_ptr<MeshModel>> models;
 		std::vector<Camera*> cameras;
+		std::vector<Light*> lights;
 
 		int activeCameraIndex;
 		int activeModelIndex;
+		int activeLightIndex;
 
 		glm::mat4x4 worldTransformation;
 
 		bool drawVerticesNormals;
 		bool drawFacesNormals;
 		bool drawBorderCube;
+		bool drawWireframe;
+
+		glm::vec4 polygonColor;
+		glm::vec4 wireframeColor;
+		glm::vec4 backgroundColor;
+
+		float verticeNormalScaleFactor;
+		float faceNormalScaleFactor;
+
+		SHADING_TYPE shading;
 
 	public:
 		Scene();
@@ -42,6 +54,15 @@ class Scene {
 		float GetvnScale();
 		void SetfnScale(float scale);
 		float GetfnScale();
+		void SetGeneratedTexture();
+		glm::vec4 GetBackgroundColor();
+		void SetBackgroundColor(const glm::vec4& color);
+		glm::vec4 GetPolygonColor();
+		void SetPolygonColor(const glm::vec4& color);
+		glm::vec4 GetWireframeColor();
+		void SetWireframeColor(const glm::vec4& color);
+		GENERATED_TEXTURE GetGeneratedTexture();
+		void SetGeneratedTexture(GENERATED_TEXTURE texture);
 
 		// Model related functions
 		void AddModel(const std::shared_ptr<MeshModel>& model);
@@ -53,6 +74,11 @@ class Scene {
 		void DeleteActiveModel();
 		glm::mat4x4 GetActiveModelTransformation();
 		std::vector<std::shared_ptr<MeshModel>>& GetModels();
+		void TranslateModel(MeshModel* activeModel, AXIS axis, float value);
+		void ScaleModel(MeshModel* activeModel, float value);
+		void RotateModel(MeshModel* activeModel, AXIS axis, float angle);
+		void RotateActiveModelRelativeToWorld(float angle, AXIS axis);
+		void RotateModelRelativeToWorld(MeshModel* activeModel, AXIS axis, float angle);
 
 		// Camera related functions
 		void AddCamera(Camera* camera);
@@ -70,6 +96,12 @@ class Scene {
 		// Light related functions
 		void AddLight(Light* light);
 		Light* GetActiveLight();
+		int GetActiveLightIndex();
+		void SetActiveLightIndex(unsigned int index);
+		void NextLight();
+		void DeleteActiveLight();
+		bool ShouldRenderLight();
+		glm::mat4x4 GetActiveLightModelTransformation();
 
 		// Actions
 		void ShowVerticesNormals(const bool key);

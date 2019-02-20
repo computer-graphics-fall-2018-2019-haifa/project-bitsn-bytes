@@ -163,138 +163,6 @@ void Scene::ScaleActiveCamera(const float scaleFactor)
 	}
 }
 
-void Scene::TranslateActiveCameraXAxis(const float translationFactor)
-{
-	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
-		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(translationFactor, 0, 0));
-		activeCamera->SetTransformation(translateTransformation * currentTransformation);
-	}
-}
-
-void Scene::TranslateActiveCameraYAxis(const float translationFactor)
-{
-	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
-		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(0, translationFactor, 0));
-		activeCamera->SetTransformation(translateTransformation * currentTransformation);
-	}
-}
-
-void Scene::TranslateActiveCameraZAxis(const float translationFactor)
-{
-	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
-		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(0, 0, translationFactor));
-		activeCamera->SetTransformation(translateTransformation * currentTransformation);
-	}
-}
-
-void Scene::RotateActiveCameraXAxis(const float rotationFactor)
-{
-	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
-		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
-		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
-		glm::mat4x4 rotateTransformation(ROTATING_MATRIX_X_AXIS(rotationFactor));
-		activeCamera->SetTransformation(distination * rotateTransformation * origin * currentTransformation);
-	}
-}
-
-void Scene::RotateActiveCameraYAxis(const float rotationFactor)
-{
-	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
-		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
-		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
-		glm::mat4x4 rotateTransformation(ROTATING_MATRIX_Y_AXIS(rotationFactor));
-		activeCamera->SetTransformation(distination * rotateTransformation * origin * currentTransformation);
-	}
-}
-
-void Scene::RotateActiveCameraZAxis(const float rotationFactor)
-{
-	if (activeCameraIndex != DISABLED) {
-		Camera* activeCamera = GetActiveCamera();
-		glm::mat4x4 currentTransformation = activeCamera->GetTransformation();
-		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
-		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
-		glm::mat4x4 rotateTransformation(ROTATING_MATRIX_Z_AXIS(rotationFactor));
-		activeCamera->SetTransformation(distination * rotateTransformation * origin * currentTransformation);
-	}
-}
-
-void Scene::TranslateActiveModelXAxis(const float translationFactor)
-{
-	if (activeModelIndex != DISABLED) {
-		std::shared_ptr<MeshModel> activeModel = models[activeModelIndex];
-		glm::mat4x4 currentTransformation = activeModel->GetWorldTransformation();
-		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(translationFactor, 0, 0));
-		activeModel->SetModelTransformation(translateTransformation * currentTransformation);
-	}
-}
-
-void Scene::TranslateActiveModelYAxis(const float translationFactor)
-{
-	if (activeModelIndex != DISABLED) {
-		std::shared_ptr<MeshModel> activeModel = models[activeModelIndex];
-		glm::mat4x4 currentTransformation = activeModel->GetWorldTransformation();
-		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(0, translationFactor, 0));
-		activeModel->SetModelTransformation(translateTransformation * currentTransformation);
-	}
-}
-
-void Scene::TranslateActiveModelZAxis(const float translationFactor)
-{
-	if (activeModelIndex != DISABLED) {
-		std::shared_ptr<MeshModel> activeModel = models[activeModelIndex];
-		glm::mat4x4 currentTransformation = activeModel->GetWorldTransformation();
-		glm::mat4x4 translateTransformation(TRANSLATION_MATRIX(0, 0, translationFactor));
-		activeModel->SetModelTransformation(translateTransformation * currentTransformation);
-	}
-}
-
-void Scene::RotateActiveModelXAxis(const float rotationFactor)
-{
-	if (activeModelIndex != DISABLED) {
-		std::shared_ptr<MeshModel> activeModel = models[activeModelIndex];
-		glm::mat4x4 currentTransformation = activeModel->GetWorldTransformation();
-		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
-		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
-		glm::mat4x4 rotateTransformation(ROTATING_MATRIX_X_AXIS(rotationFactor));
-		activeModel->SetModelTransformation(distination * rotateTransformation * origin * currentTransformation);
-	}
-}
-
-void Scene::RotateActiveModelYAxis(const float rotationFactor)
-{
-	if (activeModelIndex != DISABLED) {
-		std::shared_ptr<MeshModel> activeModel = models[activeModelIndex];
-		glm::mat4x4 currentTransformation = activeModel->GetWorldTransformation();
-		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
-		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
-		glm::mat4x4 rotateTransformation(ROTATING_MATRIX_Y_AXIS(rotationFactor));
-		activeModel->SetModelTransformation(distination * rotateTransformation * origin * currentTransformation);
-	}
-}
-
-void Scene::RotateActiveModelZAxis(const float rotationFactor)
-{
-	if (activeModelIndex != DISABLED) {
-		std::shared_ptr<MeshModel> activeModel = models[activeModelIndex];
-		glm::mat4x4 currentTransformation = activeModel->GetWorldTransformation();
-		glm::mat4x4 origin(TRANSLATION_MATRIX(-currentTransformation[3][0], -currentTransformation[3][1], -currentTransformation[3][2]));
-		glm::mat4x4 distination(TRANSLATION_MATRIX(currentTransformation[3][0], currentTransformation[3][1], currentTransformation[3][2]));
-		glm::mat4x4 rotateTransformation(ROTATING_MATRIX_Z_AXIS(rotationFactor));
-		activeModel->SetModelTransformation(distination * rotateTransformation * origin * currentTransformation);
-	}
-}
-
 // Transformation related functions
 
 void Scene::SetWorldTransformation(const glm::mat4x4 world)
@@ -352,4 +220,196 @@ std::vector<std::shared_ptr<MeshModel>>& Scene::GetModels()
 std::vector<Camera*> Scene::GetCameras()
 {
 	return cameras;
+}
+
+glm::vec4 Scene::GetBackgroundColor()
+{
+	return backgroundColor;
+}
+
+void Scene::SetBackgroundColor(const glm::vec4& color)
+{
+	backgroundColor = color;
+}
+
+glm::vec4 Scene::GetPolygonColor()
+{
+	return polygonColor;
+}
+
+void Scene::SetPolygonColor(const glm::vec4& color)
+{
+	polygonColor = color;
+}
+
+glm::vec4 Scene::GetWireframeColor()
+{
+	return wireframeColor;
+}
+
+void Scene::SetWireframeColor(const glm::vec4& color)
+{
+	wireframeColor = color;
+}
+
+GENERATED_TEXTURE Scene::GetGeneratedTexture()
+{
+	return renderer->GetGeneratedTexture();
+}
+
+void Scene::SetGeneratedTexture(GENERATED_TEXTURE texture)
+{
+	renderer->SetGeneratedTexture(texture);
+}
+
+int Scene::GetActiveLightIndex()
+{
+	return activeLightIndex;
+}
+
+void Scene::SetActiveLightIndex(unsigned int index)
+{
+	if (lights.size() > index)
+	{
+		activeLightIndex = index;
+	}
+}
+
+void Scene::NextLight()
+{
+	if (activeLightIndex != DISABLED)
+	{
+		activeLightIndex = (activeLightIndex + 1) % lights.size();
+	}
+}
+
+void Scene::DeleteActiveLight()
+{
+	if (activeLightIndex != DISABLED)
+	{
+		lights.erase(lights.begin() + activeLightIndex);
+		activeLightIndex = (unsigned)lights.size() - 1;
+	}
+}
+
+glm::mat4x4 Scene::GetActiveLightModelTransformation()
+{
+	if (activeLightIndex != DISABLED)
+	{
+		MeshModel* activeLightModel = &lights[activeLightIndex]->GetLightModel();
+		return activeLightModel->GetModelTransformation();
+	}
+	else
+	{
+		return ZERO_MATRIX;
+	}
+}
+
+void Scene::TranslateActiveLight(float value, AXIS axis)
+{
+	if (activeLightIndex != DISABLED)
+	{
+		MeshModel* activeLightModel = &lights[activeLightIndex]->GetLightModel();
+		TranslateModel(activeLightModel, axis, value);
+	}
+}
+
+void Scene::ScaleActiveLightModel(float value)
+{
+	if (activeLightIndex != DISABLED)
+	{
+		MeshModel* activeLightModel = &lights[activeLightIndex]->GetLightModel();
+		ScaleModel(activeLightModel, value);
+	}
+}
+
+void Scene::RotateActiveLightModel(float angle, AXIS axis)
+{
+	if (activeLightIndex != DISABLED)
+	{
+		MeshModel* activeLightModel = &lights[activeLightIndex]->GetLightModel();
+		RotateModel(activeLightModel, axis, angle);
+	}
+}
+
+void Scene::RotateActiveLightModelRelativeToWorld(float angle, AXIS axis)
+{
+	if (activeLightIndex != DISABLED)
+	{
+		MeshModel* activeLightModel = &lights[activeLightIndex]->GetLightModel();
+		RotateModelRelativeToWorld(activeLightModel, axis, angle);
+	}
+}
+
+bool Scene::ShouldRenderLight()
+{
+	if (activeLightIndex != DISABLED)
+	{
+		return lights[activeLightIndex]->IsModelRenderingActive();
+	}
+
+	else return false;
+}
+
+void Scene::AddLight(Light* light)
+{
+	Light* p_newLight = nullptr;
+
+	switch (type)
+	{
+	case LIGHT_SOURCE_TYPE::POINT:
+		p_newLight = new PointSourceLight(lightCoord, ambiantC, ambiantI, diffusiveC, diffusiveI, specularC, specularI);
+		break;
+	case LIGHT_SOURCE_TYPE::PARALLEL:
+		p_newLight = new ParallelSourceLight(lightCoord, ambiantC, ambiantI, diffusiveC, diffusiveI, specularC, specularI);
+		break;
+	case LIGHT_SOURCE_TYPE::AREA:
+		p_newLight = new DistributedSourceLight(lightCoord, ambiantC, ambiantI, diffusiveC, diffusiveI, specularC, specularI);
+		break;
+
+	default:
+		break;
+	}
+
+	lights.push_back(p_newLight);
+}
+
+
+Light* Scene::GetActiveLight()
+{
+	if (activeLightIndex != DISABLED) {
+		return lights[activeLightIndex];
+	}
+	else return nullptr;
+}
+
+
+void Scene::SetShadingType(SHADING_TYPE shading)
+{
+	shading = shading;
+}
+
+void Scene::DrawWireframe(bool bDrawn)
+{
+	drawWireframe = bDrawn;
+}
+
+float Scene::GetvnScale()
+{
+	return verticeNormalScaleFactor;
+}
+
+void Scene::SetvnScale(float scale)
+{
+	verticeNormalScaleFactor = scale;
+}
+
+float Scene::GetfnScale()
+{
+	return faceNormalScaleFactor;
+}
+
+void Scene::SetfnScale(float scale)
+{
+	faceNormalScaleFactor = scale;
 }

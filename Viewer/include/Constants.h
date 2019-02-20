@@ -19,6 +19,7 @@
 #define SPHERE_SOURCE						"..\\Data\\sphere.obj"
 #define CUBE_SOURCE							"..\\Data\\cube.obj"
 #define LIGHT_SOURCE						"..\\Data\\light.obj"
+#define TEAPUT_SOURCE						"..\\Data\\teaput.obj"
 // Constants
 #define DISABLED							-1
 #define PI									3.141592653589793238462643383279502884L
@@ -80,7 +81,8 @@ typedef enum _PRIMITIVE_ {
 	SPHERE = 0,
 	CUBE,
 	CAMERA,
-	LIGHT
+	LIGHT,
+	TEAPUT
 
 } PRIMITIVE;
 
@@ -128,15 +130,15 @@ typedef enum _ROTATION_REL_
 
 typedef enum _FRAME_TYPE_
 {
-	CAMERA,
-	MODEL,
-	WORLD,
-	LIGHT
+	CAMERA_,
+	MODEL_,
+	WORLD_,
+	LIGHT_
 } FRAME_TYPE;
 
 typedef enum _SHADING_TYPE_
 {
-	NONE,
+	NO_SHADING,
 	SOLID,
 	FLAT,
 	PHONG,
@@ -152,14 +154,14 @@ typedef enum _LIGHT_TYPE_
 
 typedef enum _LIGHT_SOURCE_TYPE_
 {
-	POINT,
+	POINT_,
 	PARALLEL,
 	AREA
 } LIGHT_SOURCE_TYPE;
 
 typedef enum _GENERATED_TEXTURE_
 {
-	NONE,
+	NO_TEXTURE,
 	CRYSTAL,
 	RUG
 } GENERATED_TEXTURE;
@@ -185,15 +187,17 @@ typedef struct _LIGHT_INFO_
 
 const std::map<PRIMITIVE, std::string> PRIMITIVES = {
 
-	{SPHERE, SPHERE_SOURCE},
-	{CUBE, CUBE_SOURCE},
-	{CAMERA, CAMERA_SOURCE}
+	{PRIMITIVE::SPHERE, SPHERE_SOURCE},
+	{PRIMITIVE::CUBE, CUBE_SOURCE},
+	{PRIMITIVE::CAMERA, CAMERA_SOURCE},
+	{PRIMITIVE::LIGHT, LIGHT_SOURCE},
+	{PRIMITIVE::TEAPUT, TEAPUT_SOURCE}
 
 };
 
 typedef enum _POST_EFFECT_
 {
-	NONE = 0,
+	NO_EFFECT = 0,
 	BLUR_SCENE,
 	BLOOM
 } POST_EFFECT, *PPOST_EFFECT;

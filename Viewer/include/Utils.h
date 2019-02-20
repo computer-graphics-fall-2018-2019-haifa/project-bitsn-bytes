@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <string>
+
 #include "MeshModel.h"
 
 /*
@@ -16,7 +17,7 @@ class Utils
 	public:
 		static glm::vec3 Vec3fFromStream(std::istream& issLine);
 		static glm::vec2 Vec2fFromStream(std::istream& issLine);
-		static MeshModel LoadMeshModel(const std::string& filePath, const Surface& material, GLuint program);
+		static MeshModel LoadMeshModel(const std::string& filePath, const Surface& material);
 
 		static glm::vec4 ToHomogeneousForm(const glm::vec3& normalForm);
 		static glm::vec4 ExpandToVec4(const glm::vec3& vector);

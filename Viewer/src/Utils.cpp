@@ -21,14 +21,13 @@ glm::vec2 Utils::Vec2fFromStream(std::istream& issLine)
 	return glm::vec2(x, y);
 }
 
-MeshModel Utils::LoadMeshModel(const std::string& filePath, const Surface& material, GLuint program)
+MeshModel Utils::LoadMeshModel(const std::string& filePath, const Surface& material)
 {
 	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> textureVertices;
 	std::string fullPath;
-	std::vector<Face*> polygons;
 
 	if (filePath.find("obj_examples") != std::string::npos)
 	{

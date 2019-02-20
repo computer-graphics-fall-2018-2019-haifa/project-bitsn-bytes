@@ -104,6 +104,8 @@ class LightModel : public PrimMeshModel
 		LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location, GLuint prog);
 		~LightModel() = default;
 
+		glm::vec3 GetCentroid() { return this->GetCentroid(); }
+
 };
 
 #endif // !__MESHMODEL_H__

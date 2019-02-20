@@ -1,59 +1,17 @@
 #include "Light.h"
 #include <algorithm>
 
-/* Light */
-
-Light::Light() :
-	color(glm::vec3(1.0, 1.0, 1.0))
+void PointSourceLight::Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf)
 {
-
+	Light::Illuminate(polygon, lightModelTransf);
 }
 
-Light::Light(const glm::vec3& color) :
-	color(color)
+void ParallelSourceLight::Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf)
 {
-
+	Light::Illuminate(polygon, lightModelTransf);
 }
 
-Light::~Light() { }
-
-const glm::vec3& Light::GetColor() const {
-	return color;
-}
-
-void Light::SetColor(const glm::vec3& color) {
-	this->color = color;
-}
-
-/* Point Light */
-
-PointLight::PointLight(const glm::vec3& position) :
-	Light(),
-	position(position)
+void DistributedSourceLight::Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf)
 {
-
+	Light::Illuminate(polygon, lightModelTransf);
 }
-
-PointLight::PointLight(const glm::vec3& position, const glm::vec3& color) :
-	Light(color),
-	position(position)
-{
-
-}
-
-PointLight::~PointLight() { }
-
-glm::vec3& PointLight::GetPosition() {
-	return position;
-}
-
-/* Ambient Light */
-
-AmbientLight::AmbientLight() :
-	Light(glm::vec3(0.2, 0.2, 0.2))
-{
-
-}
-
-
-AmbientLight::~AmbientLight() { }
