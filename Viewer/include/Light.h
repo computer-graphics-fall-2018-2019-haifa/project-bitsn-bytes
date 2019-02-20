@@ -2,38 +2,128 @@
 
 #include <glm/glm.hpp>
 
-class Light {
-
-	public:
-		Light();
-		Light(const glm::vec3& color);
-		virtual ~Light();
-
-		const glm::vec3& GetColor()  const;
-		void SetColor(const glm::vec3& color);
-
+class Light
+{
 	protected:
-		glm::vec3 color;
 
-};
+		LIGHT_SOURCE_TYPE type;
 
-class PointLight : public Light {
+		LightMeshModel* m_pLightModel;
+
+		glm::vec4 m_ambientLightColor;
+		float m_ambientLightIntensity;
+
+		glm::vec4 m_diffusiveLightColor;
+		float m_diffusiveLightIntensity;
+
+		glm::vec4 m_specularLightColor;
+		float m_specularLightIntensity;
 
 	public:
-		PointLight(const glm::vec3& position);
-		PointLight(const glm::vec3& position, const glm::vec3& color);
-		virtual ~PointLight();
-		glm::vec3& GetPosition();
 
+		Light(LIGHT_SOURCE_TYPE type, const glm::vec3& location,
+			const glm::vec4& ambientC, float ambientI,
+			const glm::vec4& diffusiveC, float diffusiveI,
+			const glm::vec4& specularC, float specularI, GLuint prog) :
+			m_pLightModel(new LightMeshModel(type, location, prog)),
+			m_ambientLightColor(ambientC), m_ambientLightIntensity(ambientI),
+			m_diffusiveLightColor(diffusiveC), m_diffusiveLightIntensity(diffusiveI),
+			m_specularLightColor(specularC), m_specularLightIntensity(specularI) {}
+
+		virtual ~Light() { delete m_pLightModel; }
+
+		LightMeshModel&  GetLightModel() { return *m_pLightModel; }
+
+		void SetAmbientIntensity(float   intensity) { m_ambientLightIntensity = intensity; }
+		void SetDiffusiveIntensity(float intensity) { m_diffusiveLightIntensity = intensity; }
+		void SetSpecularIntensity(float  intensity) { m_specularLightIntensity = intensity; }
+
+		float GetAmbientIntensity() { return m_ambientLightIntensity; }
+		float GetDiffusiveIntensity() { return m_diffusiveLightIntensity; }
+		float GetSpecularIntensity() { return m_specularLightIntensity; }
+
+		void SetAmbientColor(const glm::vec4& color) { m_ambientLightColor = color; }
+		void SetDiffusiveColor(const glm::vec4& color) { m_diffusiveLightColor = color; }
+		void SetSpecularColor(const glm::vec4& color) { m_specularLightColor = color; }
+
+		glm::vec4 GetAmbientColor() { return m_ambientLightColor; }
+		glm::vec4 GetDiffusiveColor() { return m_diffusiveLightColor; }
+		glm::vec4 GetSpecularColor() { return m_specularLightColor; }
+
+		virtual void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf)
+		{
+			float ambientI = polygon.m_surface->m_ambientReflectionRate * m_ambientLightIntensity;
+			glm::vec4 ambientC = polygon.m_surface->m_ambientColor + m_ambientLightColor;
+			ambientC *= ambientI;
+
+			polygon.m_actualColorP1 += ambientC;
+			polygon.m_actualColorP2 += ambientC;
+			polygon.m_actualColorP3 += ambientC;
+
+
+
+			float diffusiveI = m_diffusiveLightIntensity * polygon.m_surface->m_diffuseReflectionRate;
+			glm::vec4 diffusiveC = polygon.m_surface->m_diffuseColor + m_diffusiveLightColor;
+
+			float speculativeI = m_specularLightIntensity * polygon.m_surface->m_specularReflectionRate;
+			glm::vec4 speculativeC = polygon.m_surface->m_specularColor + m_specularLightColor;
+
+			glm::vec3 centroid = GetLightModel().getCentroid();
+			polygon.m_diffusiveColorAndSource.push_back({ { diffusiveI, diffusiveC }, { centroid , lightModelTransf } });
+			polygon.m_speculativeColorAndSource.push_back({ {speculativeI, speculativeC}, { centroid, lightModelTransf } });
+		}
+};
+
+
+
+
+class PointSourceLight : public Light
+{
 	private:
-		glm::vec3 position;
 
-};
-
-class AmbientLight : public Light {
+		glm::vec3 lightSource = { 2.f, 2.f, 2.f };
 
 	public:
-		AmbientLight();
-		virtual ~AmbientLight();
+		PointSourceLight(const glm::vec3& location,
+			const glm::vec4& ambientC, float ambientI,
+			const glm::vec4& diffusiveC, float diffusiveI,
+			const glm::vec4& specularC, float specularI, GLuint prog) :
+			Light(LIGHT_SOURCE_TYPE::POINT, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI, prog) {}
+		~PointSourceLight() = default;
+		void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf);
+};
 
+
+
+
+class ParallelSourceLight : public Light
+{
+	private:
+		std::vector< glm::vec3 > lightSource;
+
+	public:
+		ParallelSourceLight(const glm::vec3& location,
+			const glm::vec4& ambientC, float ambientI,
+			const glm::vec4& diffusiveC, float diffusiveI,
+			const glm::vec4& specularC, float specularI, GLuint prog) :
+			Light(LIGHT_SOURCE_TYPE::PARALLEL, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI, prog) {}
+		~ParallelSourceLight() = default;
+		void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf);
+};
+
+
+
+
+class DistributedSourceLight : public Light
+{
+	private:
+		std::vector< glm::vec3 > lightSource;
+	public:
+		DistributedSourceLight(const glm::vec3& location,
+			const glm::vec4& ambientC, float ambientI,
+			const glm::vec4& diffusiveC, float diffusiveI,
+			const glm::vec4& specularC, float specularI, GLuint prog) :
+			Light(LIGHT_SOURCE_TYPE::AREA, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI, prog) {}
+		~DistributedSourceLight() = default;
+		void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf);
 };

@@ -239,7 +239,7 @@ PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(Utils::LoadM
 }
 
 // CameraModel implementation
-CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(CAMERA)
+CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(PRIMITIVE::CAMERA)
 {
 	coordinates = coordinates_;
 }
@@ -252,4 +252,10 @@ const glm::vec4 CameraModel::GetCoordinates() const
 void CameraModel::SetCoordinates(const glm::vec4& coordinates_)
 {
 	coordinates = coordinates_;
+}
+
+// LightModel implementation
+LightModel::LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location, GLuint prog) : PrimMeshModel(PRIMITIVE::LIGHT)
+{
+	SetModelTransformation(glm::mat4x4(TRANSLATION_MATRIX(location.x, location.y, location.z)) * glm::mat4x4(SCALING_MATRIX4(0.1)));
 }

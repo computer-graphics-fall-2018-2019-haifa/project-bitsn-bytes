@@ -94,4 +94,13 @@ class CameraModel : public PrimMeshModel
 		void SetCoordinates(const glm::vec4& coordinates_);
 };
 
+class LightModel : public PrimMeshModel
+{
+	public:
+
+		LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location, GLuint prog);
+		~LightModel() = default;
+
+};
+
 #endif // !__MESHMODEL_H__

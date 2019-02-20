@@ -18,6 +18,7 @@
 #define CAMERA_SOURCE						"..\\Data\\camera.obj"
 #define SPHERE_SOURCE						"..\\Data\\sphere.obj"
 #define CUBE_SOURCE							"..\\Data\\cube.obj"
+#define LIGHT_SOURCE						"..\\Data\\light.obj"
 // Constants
 #define DISABLED							-1
 #define PI									3.141592653589793238462643383279502884L
@@ -42,6 +43,12 @@
 #define TO_RADIAN(angle)					angle * PI / 180.0f
 #define INDEX(width, x, y, c)				(x + y * width) * 3 + c
 #define COLOR(color)						Utils::GetColor(color)
+
+#define TUPLE_POLYGONS						(0)
+#define TUPLE_VERTICES						(1)
+#define TUPLE_VNORMALS						(2)
+#define TUPLE_VPOSITIONS					(3)
+#define TUPLE_TEXTURES						(4)
 
 // Enumerators
 typedef enum _COLOR_ {
@@ -72,7 +79,8 @@ typedef enum _PRIMITIVE_ {
 
 	SPHERE = 0,
 	CUBE,
-	CAMERA
+	CAMERA,
+	LIGHT
 
 } PRIMITIVE;
 
