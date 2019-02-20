@@ -88,7 +88,7 @@ MeshModel Utils::LoadMeshModel(const std::string& filePath, const Surface& mater
 		}
 	}
 
-	return MeshModel(faces, vertices, normals, Utils::GetFileName(filePath));
+	return MeshModel(faces, vertices, normals, material, Utils::GetFileName(filePath));
 }
 
 std::string Utils::GetWorkingDirectory()

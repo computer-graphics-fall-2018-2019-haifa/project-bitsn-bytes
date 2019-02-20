@@ -8,7 +8,6 @@
 #include <string>
 #include <memory>
 #include "Face.h"
-#include "Constants.h"
 
 /*
  * MeshModel class.
@@ -29,6 +28,7 @@ class MeshModel
 		std::vector<glm::vec3> normals;
 		glm::vec3* vertexPositions;
 		glm::vec3* vertexNormals;
+		Surface surface;
 		// Computed properties
 		glm::mat4x4 transformation;
 		glm::mat4x4 worldTransformation;
@@ -45,7 +45,7 @@ class MeshModel
 
 	public:
 		MeshModel(const MeshModel& primitive);
-		MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const std::string& modelName = "");
+		MeshModel(const std::vector<Face>& faces, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& normals, const Surface& material, const std::string& modelName = "");
 		virtual ~MeshModel();
 
 		std::pair<std::vector<glm::vec3>, std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>>>* Render();
@@ -83,7 +83,7 @@ class PrimMeshModel : public MeshModel
 		PRIMITIVE model;
 
 	public:
-		PrimMeshModel(const PRIMITIVE primitive);
+		PrimMeshModel(const PRIMITIVE primitive, const Surface& material);
 };
 
 class CameraModel : public PrimMeshModel
@@ -101,7 +101,7 @@ class LightModel : public PrimMeshModel
 {
 	public:
 
-		LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location, GLuint prog);
+		LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location);
 		~LightModel() = default;
 
 		glm::vec3 GetCentroid() { return this->GetCentroid(); }

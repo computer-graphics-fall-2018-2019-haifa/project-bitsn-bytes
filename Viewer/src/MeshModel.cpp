@@ -25,11 +25,12 @@ MeshModel::MeshModel(const MeshModel& primitive)
 	color = primitive.color;
 }
 
-MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec3>& vertices_, const std::vector<glm::vec3>& normals_, const std::string& modelName_) :
+MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec3>& vertices_, const std::vector<glm::vec3>& normals_, const Surface& material, const std::string& modelName_) :
 	faces(faces_),
 	vertices(vertices_),
 	normals(normals_),
 	modelName(modelName_),
+	surface(surface),
 	transformation(I_MATRIX),
 	worldTransformation(I_MATRIX),
 	normalTransformation(I_MATRIX),
@@ -233,13 +234,13 @@ const std::string& MeshModel::GetModelName() const
 
 // PrimMeshModel implementation
 
-PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive) : MeshModel(Utils::LoadMeshModel(PRIMITIVES.at(primitive)))
+PrimMeshModel::PrimMeshModel(const PRIMITIVE primitive, const Surface& material) : MeshModel(Utils::LoadMeshModel(PRIMITIVES.at(primitive), material))
 {
 
 }
 
 // CameraModel implementation
-CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(PRIMITIVE::CAMERA)
+CameraModel::CameraModel(glm::vec4 coordinates_) : PrimMeshModel(PRIMITIVE::CAMERA, Surface())
 {
 	coordinates = coordinates_;
 }
@@ -255,7 +256,7 @@ void CameraModel::SetCoordinates(const glm::vec4& coordinates_)
 }
 
 // LightModel implementation
-LightModel::LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location, GLuint prog) : PrimMeshModel(PRIMITIVE::LIGHT)
+LightModel::LightModel(LIGHT_SOURCE_TYPE type, const glm::vec3& location) : PrimMeshModel(PRIMITIVE::LIGHT, Surface())
 {
 	SetModelTransformation(glm::mat4x4(TRANSLATION_MATRIX(location.x, location.y, location.z)) * glm::mat4x4(SCALING_MATRIX4(0.1)));
 }
