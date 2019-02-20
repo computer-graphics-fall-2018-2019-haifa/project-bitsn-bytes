@@ -21,7 +21,7 @@ glm::vec2 Utils::Vec2fFromStream(std::istream& issLine)
 	return glm::vec2(x, y);
 }
 
-MeshModel Utils::LoadMeshModel(const std::string& filePath)
+MeshModel Utils::LoadMeshModel(const std::string& filePath, const Surface& material)
 {
 	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
@@ -184,34 +184,34 @@ bool Utils::IsVecEqual(glm::vec4 v1, glm::vec4 v2)
 	return bEquals;
 }
 
-glm::vec3 Utils::GetColor(COLOR color)
+glm::vec4 Utils::GetColor(COLOR color)
 {
 	switch (color)
 	{
 		case WHITE:
-			return { 1.0f, 1.0f, 1.0f };
+			return { 1.0f, 1.0f, 1.0f, 1 };
 		case BLACK:
-			return { 0.f, 0.f, 0.f };
+			return { 0.f, 0.f, 0.f, 1 };
 		case LIME:
-			return { 0, 1.0f ,0 };
+			return { 0, 1.0f, 0, 1 };
 		case GREEN:
-			return { 0, 0.5f, 0 };
+			return { 0, 0.5f, 0, 1 };
 		case BLUE:
-			return { 0, 0 ,1.0f };
+			return { 0, 0, 1.0f, 1 };
 		case RED:
-			return { 1.0f, 0 ,0 };
+			return { 1.0f, 0, 0, 1 };
 		case YELLOW:
-			return { 1.0f,1.0f,0 };
+			return { 1.0f, 1.0f, 0, 1 };
 		case X_COL:
-			return { 1.f,102.f / 255.f,0.f };
+			return { 1.f, 102.f / 255.f, 0.f, 1 };
 		case Y_COL:
-			return { 153.f / 255.f,204.f / 255.f,0.f };
+			return { 153.f / 255.f, 204.f / 255.f, 0.f, 1 };
 		case Z_COL:
-			return { 51.f / 255.f, 102.f / 255, 1.f };
+			return { 51.f / 255.f, 102.f / 255, 1.f, 1 };
 
 
 		default:
-			return { 0.f, 0.f, 0.f };
+			return { 0.f, 0.f, 0.f, 1 };
 
 	}
 }

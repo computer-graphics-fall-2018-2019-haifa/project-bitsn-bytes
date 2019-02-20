@@ -102,6 +102,79 @@ typedef struct _CUBE_LINES_
 
 } CUBE_LINES, *PCUBE_LINES;
 
+typedef enum _AXIS_
+{
+	X,
+	Y,
+	Z,
+	XY,
+	YZ,
+	ZX
+} AXIS;
+
+typedef enum _ROTATION_REL_
+{
+	WORLD,
+	SELF
+} ROTATION_REL;
+
+typedef enum _FRAME_TYPE_
+{
+	CAMERA,
+	MODEL,
+	WORLD,
+	LIGHT
+} FRAME_TYPE;
+
+typedef enum _SHADING_TYPE_
+{
+	NONE,
+	SOLID,
+	FLAT,
+	PHONG,
+	GOURAUD
+} SHADING_TYPE;
+
+typedef enum _LIGHT_TYPE_
+{
+	AMBIENT,
+	SPECULAR,
+	DIFFUSIVE
+} LIGHT_TYPE;
+
+typedef enum _LIGHT_SOURCE_TYPE_
+{
+	POINT,
+	PARALLEL,
+	AREA
+} LIGHT_SOURCE_TYPE;
+
+typedef enum _GENERATED_TEXTURE_
+{
+	NONE,
+	CRYSTAL,
+	RUG
+} GENERATED_TEXTURE;
+
+typedef struct _LIGHT_DATA_
+{
+	float     intensity;
+	glm::vec4 color;
+
+
+} LIGHT_DATA, *PLIGHT_DATA;
+
+typedef struct _LIGHT_INFO_
+{
+	LIGHT_DATA diffusive;
+	LIGHT_DATA specular;
+	LIGHT_DATA ambient;
+
+	glm::vec3 location;
+	LIGHT_SOURCE_TYPE lightSourceType;
+
+} LIGHT_INFO, *PLIGHTS_INFO;
+
 const std::map<PRIMITIVE, std::string> PRIMITIVES = {
 
 	{SPHERE, SPHERE_SOURCE},
@@ -109,6 +182,13 @@ const std::map<PRIMITIVE, std::string> PRIMITIVES = {
 	{CAMERA, CAMERA_SOURCE}
 
 };
+
+typedef enum _POST_EFFECT_
+{
+	NONE = 0,
+	BLUR_SCENE,
+	BLOOM
+} POST_EFFECT, *PPOST_EFFECT;
 
 #define SET_PROJECTION_PARAMETERS(parameters)                                \
                                          float left     = parameters.left;   \

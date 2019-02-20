@@ -16,7 +16,7 @@ class Utils
 	public:
 		static glm::vec3 Vec3fFromStream(std::istream& issLine);
 		static glm::vec2 Vec2fFromStream(std::istream& issLine);
-		static MeshModel LoadMeshModel(const std::string& filePath);
+		static MeshModel LoadMeshModel(const std::string& filePath, const Surface& material);
 
 		static glm::vec4 ToHomogeneousForm(const glm::vec3& normalForm);
 		static glm::vec4 ExpandToVec4(const glm::vec3& vector);
@@ -27,7 +27,7 @@ class Utils
 		static bool IsVecEqual(glm::vec3 v1, glm::vec3 v2);
 		static bool IsVecEqual(glm::vec4 v1, glm::vec4 v2);
 		
-		static glm::vec3 GetColor(COLOR color);
+		static glm::vec4 GetColor(COLOR color);
 
 	private:
 		static std::string GetFileName(const std::string& filePath);

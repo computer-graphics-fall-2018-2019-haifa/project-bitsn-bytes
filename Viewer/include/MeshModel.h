@@ -4,6 +4,7 @@
 #define __MESHMODEL_H__
 
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 #include <string>
 #include <memory>
 #include "Face.h"
@@ -17,6 +18,9 @@
 class MeshModel
 {
 	private:
+		GLuint VAO;
+		GLuint VBO;
+		GLuint TEX;
 		// constant properties
 		glm::vec4 color;
 		std::string modelName;

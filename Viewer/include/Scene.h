@@ -10,7 +10,7 @@
 #include <memory>
 #include "MeshModel.h"
 #include "Camera.h"
-//#include "Renderer.h"
+#include "Light.h"
 #include "Constants.h"
 
 class Renderer;
@@ -36,6 +36,13 @@ class Scene {
 	public:
 		Scene();
 
+		// Getters & Setters
+		glm::vec4 GetPolygonColor();
+		void SetvnScale(float scale);
+		float GetvnScale();
+		void SetfnScale(float scale);
+		float GetfnScale();
+
 		// Model related functions
 		void AddModel(const std::shared_ptr<MeshModel>& model);
 		const int GetModelCount() const;
@@ -60,6 +67,10 @@ class Scene {
 		const glm::mat4x4 GetActiveCameraProjection();
 		std::vector<Camera*> GetCameras();
 
+		// Light related functions
+		void AddLight(Light* light);
+		Light* GetActiveLight();
+
 		// Actions
 		void ShowVerticesNormals(const bool key);
 		void ShowFacesNormals(const bool key);
@@ -67,6 +78,8 @@ class Scene {
 		bool ShouldShowVerticesNormals() { return drawVerticesNormals; }
 		bool ShouldShowFacesNormals() { return drawFacesNormals; }
 		bool ShouldShowBorderCube() { return drawBorderCube; }
+		void DrawWireframe(const bool flag);
+		void SetShadingType(SHADING_TYPE type);
 
 		// Projection functions
 		void SetOrthographicProjection(const PROJECTION_PARAMETERS);
@@ -76,22 +89,20 @@ class Scene {
 		// Scale function
 		void ScaleActiveCamera(const float scaleFactor);
 		void ScaleActiveModel(const float scaleFactor);
+		void ScaleActiveLightModel(const float scaleFactor);
 
 		// Translation functions
-		void TranslateActiveCameraXAxis(const float translationFactor);
-		void TranslateActiveCameraYAxis(const float translationFactor);
-		void TranslateActiveCameraZAxis(const float translationFactor);
-		void TranslateActiveModelXAxis(const float translationFactor);
-		void TranslateActiveModelYAxis(const float translationFactor);
-		void TranslateActiveModelZAxis(const float translationFactor);
+		void TranslateActiveCameraAxis(float moveFactor, AXIS axis);
+		void TranslateActiveModel(float moveFactor, AXIS axis);
+		void TranslateActiveLight(float moveFactor, AXIS axis);
 
 		// Rotation functions
-		void RotateActiveCameraXAxis(const float rotationFactor);
-		void RotateActiveCameraYAxis(const float rotationFactor);
-		void RotateActiveCameraZAxis(const float rotationFactor);
-		void RotateActiveModelXAxis(const float rotationFactor);
-		void RotateActiveModelYAxis(const float rotationFactor);
-		void RotateActiveModelZAxis(const float rotationFactor);
+		void RotateActiveCameraRelativeToWorld(float angle, AXIS axis);
+		void RotateActiveCamera(float angle, AXIS axis);
+		void RotateActiveModelRelativeToWorld(float angle, AXIS axis);
+		void RotateActiveModel(float angle, AXIS axis);
+		void RotateActiveLightModelRelativeToWorld(float angle, AXIS axis);
+		void RotateActiveLightModel(float angle, AXIS axis);
 
 		// Transformation related functions
 		void SetWorldTransformation(const glm::mat4x4 world);
