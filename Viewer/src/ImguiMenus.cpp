@@ -129,7 +129,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		ImGui::Text("---------------- Camera Control: ----------------");
 
 
-		static int currentFrame = FRAME_TYPE::CAMERA;
+		static int currentFrame = FRAME_TYPE::CAMERA_;
 		static AXIS currentAxis = AXIS::Y;
 		static int currentRel = ROTATION_REL::WORLD;
 
@@ -144,25 +144,25 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		if (ImGui::SmallButton("World"))
 		{
 			sCurrentFrame = "World";
-			currentFrame = FRAME_TYPE::WORLD;
+			currentFrame = FRAME_TYPE::WORLD_;
 		}
 		ImGui::SameLine();
 		if (ImGui::SmallButton("Camera"))
 		{
 			sCurrentFrame = "Camera";
-			currentFrame = FRAME_TYPE::CAMERA;
+			currentFrame = FRAME_TYPE::CAMERA_;
 		}
 		ImGui::SameLine();
 		if (ImGui::SmallButton("Model"))
 		{
 			sCurrentFrame = "Model";
-			currentFrame = FRAME_TYPE::MODEL;
+			currentFrame = FRAME_TYPE::MODEL_;
 		}
 		ImGui::SameLine();
 		if (ImGui::SmallButton("Light"))
 		{
 			sCurrentFrame = "Light";
-			currentFrame = FRAME_TYPE::LIGHT;
+			currentFrame = FRAME_TYPE::LIGHT_;
 		}
 
 		ImGui::Text("Relative to: ");
@@ -210,7 +210,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				switch (currentRel)
 				{
@@ -225,7 +225,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 				default: break;
 				}
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				switch (currentRel)
 				{
@@ -240,7 +240,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 				default: break;
 				}
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				switch (currentRel)
 				{
@@ -268,15 +268,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->ScaleActiveCamera(1.f / camScaleFactor);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->ScaleActiveModel(camScaleFactor);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->ScaleActiveLightModel(1.0f / camScaleFactor);
 			} break;
@@ -289,15 +289,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->ScaleActiveCamera(camScaleFactor);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->ScaleActiveModel(1.0f / camScaleFactor);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->ScaleActiveLightModel(camScaleFactor);
 			} break;
@@ -315,15 +315,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->TranslateActiveCameraAxis(-moveFactor, AXIS::X);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->TranslateActiveModel(-moveFactor, AXIS::X);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->TranslateActiveLight(-moveFactor, AXIS::X);
 			} break;
@@ -335,15 +335,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->TranslateActiveCameraAxis(moveFactor, AXIS::X);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->TranslateActiveModel(moveFactor, AXIS::X);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->TranslateActiveLight(moveFactor, AXIS::X);
 			} break;
@@ -354,15 +354,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->TranslateActiveCameraAxis(moveFactor, AXIS::Y);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->TranslateActiveModel(moveFactor, AXIS::Y);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->TranslateActiveLight(moveFactor, AXIS::Y);
 			} break;
@@ -374,15 +374,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->TranslateActiveCameraAxis(-moveFactor, AXIS::Y);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->TranslateActiveModel(-moveFactor, AXIS::Y);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->TranslateActiveLight(-moveFactor, AXIS::Y);
 			} break;
@@ -393,15 +393,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->TranslateActiveCameraAxis(moveFactor, AXIS::Z);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->TranslateActiveModel(moveFactor, AXIS::Z);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->TranslateActiveLight(moveFactor, AXIS::Z);
 			} break;
@@ -413,15 +413,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 		{
 			switch (currentFrame)
 			{
-			case FRAME_TYPE::CAMERA:
+			case FRAME_TYPE::CAMERA_:
 			{
 				scene->TranslateActiveCameraAxis(-moveFactor, AXIS::Z);
 			} break;
-			case FRAME_TYPE::MODEL:
+			case FRAME_TYPE::MODEL_:
 			{
 				scene->TranslateActiveModel(-moveFactor, AXIS::Z);
 			} break;
-			case FRAME_TYPE::LIGHT:
+			case FRAME_TYPE::LIGHT_:
 			{
 				scene->TranslateActiveLight(-moveFactor, AXIS::Z);
 			} break;
@@ -527,7 +527,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 
 		ImGui::Text("Material:");
 
-		static int currentTexture = static_cast<int>(GENERATED_TEXTURE::NONE);
+		static int currentTexture = static_cast<int>(GENERATED_TEXTURE::NO_TEXTURE);
 		static const char TextureTypes[] = { "None\0Crystal\0Rug\0" };
 		ImGui::Text("Generated Non-Uniform Texture");
 		bool static colorsNotInited = false;
@@ -721,7 +721,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 
 		scene->SetShadingType(static_cast<SHADING_TYPE>(currentShading));
 
-		static int currentLight = static_cast<int>(LIGHT_SOURCE_TYPE::POINT);
+		static int currentLight = static_cast<int>(LIGHT_SOURCE_TYPE::POINT_);
 		static const char LightTypes[] = { "Point\0Parallel\0Area\0" };
 		ImGui::Text("Light Source");
 		ImGui::Combo("LS", &currentLight, LightTypes);
@@ -757,20 +757,21 @@ void DrawImguiMenus(ImGuiIO& io, Scene* scene)
 			LIGHT_SOURCE_TYPE type = static_cast<LIGHT_SOURCE_TYPE>(currentLight);
 			Light* light = NULL;
 
+			glm::vec3 coordinates = { lightCoord[0], lightCoord[2], lightCoord[3] };
 			glm::vec4 ambiantC = { ambientColor[0], ambientColor[1], ambientColor[2], 1 };
 			glm::vec4 diffusiveC = { diffusiveColor[0], diffusiveColor[1], diffusiveColor[2], 1 };
 			glm::vec4 specularC = { specularColor[0], specularColor[1], specularColor[2], 1 };
 
 			switch (type)
 			{
-				case LIGHT_SOURCE_TYPE::POINT:
-					light = new PointSourceLight(lightCoord, ambiantC, ambiantIntensity, diffusiveC, diffusiveIntensity, specularC, specularIntensity);
+				case LIGHT_SOURCE_TYPE::POINT_:
+					light = new PointSourceLight(coordinates, ambiantC, ambiantIntensity, diffusiveC, diffusiveIntensity, specularC, specularIntensity);
 					break;
 				case LIGHT_SOURCE_TYPE::PARALLEL:
-					light = new ParallelSourceLight(lightCoord, ambiantC, ambiantIntensity, diffusiveC, diffusiveIntensity, specularC, specularIntensity);
+					light = new ParallelSourceLight(coordinates, ambiantC, ambiantIntensity, diffusiveC, diffusiveIntensity, specularC, specularIntensity);
 					break;
 				case LIGHT_SOURCE_TYPE::AREA:
-					light = new DistributedSourceLight(lightCoord, ambiantC, ambiantIntensity, diffusiveC, diffusiveIntensity, specularC, specularIntensity);
+					light = new DistributedSourceLight(coordinates, ambiantC, ambiantIntensity, diffusiveC, diffusiveIntensity, specularC, specularIntensity);
 					break;
 
 				default:

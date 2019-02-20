@@ -23,6 +23,7 @@ MeshModel::MeshModel(const MeshModel& primitive)
 	centroid = primitive.centroid;
 	cubeLines = primitive.cubeLines;
 	color = primitive.color;
+	surface = primitive.surface;
 }
 
 MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec3>& vertices_, const std::vector<glm::vec3>& normals_, const Surface& material, const std::string& modelName_) :

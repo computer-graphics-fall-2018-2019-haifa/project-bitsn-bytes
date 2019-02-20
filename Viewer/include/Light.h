@@ -27,8 +27,8 @@ class Light
 		Light(LIGHT_SOURCE_TYPE type, const glm::vec3& location,
 			const glm::vec4& ambientC, float ambientI,
 			const glm::vec4& diffusiveC, float diffusiveI,
-			const glm::vec4& specularC, float specularI, GLuint prog) :
-			lightModel(new LightModel(type, location, prog)),
+			const glm::vec4& specularC, float specularI) :
+			lightModel(new LightModel(type, location)),
 			ambientLightColor(ambientC), ambientLightIntensity(ambientI),
 			diffusiveLightColor(diffusiveC), diffusiveLightIntensity(diffusiveI),
 			specularLightColor(specularC), specularLightIntensity(specularI) {}
@@ -87,8 +87,9 @@ class PointSourceLight : public Light
 		PointSourceLight(const glm::vec3& location,
 			const glm::vec4& ambientC, float ambientI,
 			const glm::vec4& diffusiveC, float diffusiveI,
-			const glm::vec4& specularC, float specularI, GLuint prog) :
-			Light(LIGHT_SOURCE_TYPE::POINT_, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI, prog) {}
+			const glm::vec4& specularC, float specularI) :
+			Light(LIGHT_SOURCE_TYPE::POINT_, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI) {}
+		
 		~PointSourceLight() = default;
 		void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf);
 };
@@ -102,8 +103,8 @@ class ParallelSourceLight : public Light
 		ParallelSourceLight(const glm::vec3& location,
 			const glm::vec4& ambientC, float ambientI,
 			const glm::vec4& diffusiveC, float diffusiveI,
-			const glm::vec4& specularC, float specularI, GLuint prog) :
-			Light(LIGHT_SOURCE_TYPE::PARALLEL, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI, prog) {}
+			const glm::vec4& specularC, float specularI) :
+			Light(LIGHT_SOURCE_TYPE::PARALLEL, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI) {}
 		~ParallelSourceLight() = default;
 		void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf);
 };
@@ -116,8 +117,8 @@ class DistributedSourceLight : public Light
 		DistributedSourceLight(const glm::vec3& location,
 			const glm::vec4& ambientC, float ambientI,
 			const glm::vec4& diffusiveC, float diffusiveI,
-			const glm::vec4& specularC, float specularI, GLuint prog) :
-			Light(LIGHT_SOURCE_TYPE::AREA, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI, prog) {}
+			const glm::vec4& specularC, float specularI) :
+			Light(LIGHT_SOURCE_TYPE::AREA, location, ambientC, ambientI, diffusiveC, diffusiveI, specularC, specularI) {}
 		~DistributedSourceLight() = default;
 		void Illuminate(Face & polygon, const glm::mat4x4& lightModelTransf);
 };
