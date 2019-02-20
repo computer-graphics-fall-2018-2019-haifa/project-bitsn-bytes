@@ -56,35 +56,16 @@ void Camera::SetOrthographicProjection(const PROJECTION_PARAMETERS parameters)
 {
 	SET_PROJECTION_PARAMETERS(parameters);
 
-	projectionTransformation = glm::mat4x4(
-		{
-
-			{      2.0f / (right - left) ,                 0                ,                 0                   ,              0              },
-			{                 0                ,      2.0f / (top - bottom) ,                 0                   ,              0              },
-			{                 0                ,                 0                ,        2.0f / (zNear - zFar)    ,              0              },
-			{ -(right + left) / (right - left) , -(bottom + top) / (top - bottom) , -(zFar + zNear) / (zFar - zNear)    ,              1              }
-
-		});
+	float width = right - left;
+	float height = top - bottom;
+	projectionTransformation = glm::ortho(-width / 2, width / 2, -height / 2, height / 2, zNear, zFar);
 }
 
 void Camera::SetPerspectiveProjection(const PERSPECTIVE_PARAMETERS parameters)
 {
-	PROJECTION_PARAMETERS projectionParameters = { 0 };
-	float height = parameters.zNear * tan(TO_RADIAN(parameters.fovy) / 2.0f);
-	float width = height * parameters.aspect;
-
-	projectionParameters.left = -width;
-	projectionParameters.right = width;
-	projectionParameters.bottom = -height;
-	projectionParameters.top = height;
-	projectionParameters.zNear = parameters.zNear;
-	projectionParameters.zFar = parameters.zFar;
-
-	validateProjectionParameters(projectionParameters);
-
-	SetFrustumViewVolume(projectionParameters);
-
-	throw false;
+	SET_PERSPESCTIVE_PARAMETERS(parameters);
+	
+	this->projectionTransformation = glm::perspective(fovy,	aspect,	zNear, zFar);
 }
 
 void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters)
@@ -95,10 +76,10 @@ void Camera::SetFrustumViewVolume(const PROJECTION_PARAMETERS parameters)
 
 	projectionTransformation = glm::mat4x4(
 		{
-			{   2.0f * zNear / (right - left)    ,             0                    ,                  0                  ,              0              },
-			{                0                 ,   2.0f * zNear / (top - bottom)    ,                  0                  ,              0              },
-			{ (right + left) / (right - left)  , (top + bottom) / (top - bottom)  ,  -(zFar + zNear) / (zFar - zNear)   ,             -1              },
-			{                0                 ,              0                   , -2.0f * zFar * zNear / (zFar - zNear)   ,              0              }
+			{   2.0f * zNear / (right - left)  ,              0                   ,                  0                    ,              0              },
+			{                0                 ,   2.0f * zNear / (top - bottom)  ,                  0                    ,              0              },
+			{ (right + left) / (right - left)  , (top + bottom) / (top - bottom)  ,  -(zFar + zNear) / (zFar - zNear)     ,             -1              },
+			{                0                 ,              0                   , -2.0f * zFar * zNear / (zFar - zNear) ,              0              }
 		});
 
 	frustumParameters = parameters;
