@@ -31,7 +31,7 @@ MeshModel::MeshModel(const std::vector<Face>& faces_, const std::vector<glm::vec
 	vertices(vertices_),
 	normals(normals_),
 	modelName(modelName_),
-	surface(surface),
+	surface(material),
 	transformation(I_MATRIX),
 	worldTransformation(I_MATRIX),
 	normalTransformation(I_MATRIX),

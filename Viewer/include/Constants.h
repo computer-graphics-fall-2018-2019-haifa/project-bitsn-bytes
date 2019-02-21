@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef __CONSTANTS_H__
-#define __CONSTANTS_H__
-
 #include <string>
 #include <stdlib.h>
 #include <map>
@@ -223,5 +220,3 @@ typedef enum _POST_EFFECT_
                                          float aspect   = parameters.aspect; \
                                          float zNear    = parameters.zNear;  \
                                          float zFar     = parameters.zFar;   \
-
-#endif // !__CONSTANTS_H__
